@@ -1,0 +1,67 @@
+/* Estilo del carrusel */
+#carrusel .carousel-inner img {
+    height: 500px; /* Altura fija para el carrusel */
+    object-fit: cover; /* Ajusta las imágenes */
+}
+
+.carousel-caption h3 {
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro */
+    color: #f0c541; /* Color de texto */
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+/* Sección Informativa */
+#info .section-title {
+    font-size: 2em;
+    color: #80a8cf; /* Color similar al header */
+}
+
+#info .section-description {
+    font-size: 1.1em;
+    line-height: 1.6em;
+    color: #333;
+}
+
+#info .btn-primary {
+    background-color: #272625;
+    border: none;
+    color: #333;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+#info{
+    padding-bottom: 50px;
+}
+
+#info .btn-primary:hover {
+    background-color: #80a8cf;
+    color: #e4e5e7;
+}
+
+/* Testimonios */
+#testimonios .section-title {
+    font-size: 2em;
+    color: #80a8cf;
+}
+
+#testimonios .section-description {
+    color: #555;
+    font-size: 1.1em;
+}
+
+blockquote {
+    font-size: 1.2em;
+    color: #333;
+    font-style: italic;
+    border-left: 4px solid #f0c541;
+    padding-left: 15px;
+    margin-top: 20px;
+}
+
+blockquote-footer {
+    color: #666;
+    font-size: 0.9em;
+}

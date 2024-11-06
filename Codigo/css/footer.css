@@ -1,0 +1,107 @@
+/* Estilos generales para el footer */
+.footer {
+    background-color: #ffffff;/* Fondo similar al header */
+    color: #e4e5e7; /* Texto claro */
+    padding: 40px 0; /* Espaciado más amplio */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Contenedor del footer */
+.container-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Distribuye las secciones */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.footer-section {
+    flex: 1 1 300px; /* Ancho mínimo y adaptable para cada sección */
+    margin: 20px;
+}
+
+.footer-section h4 {
+    font-size: 1.5em;
+    color: #000000; /* Color similar al header */
+    margin-bottom: 15px;
+}
+
+.footer-section p {
+    font-size: 1em;
+    line-height: 1.5em;
+}
+
+/* Estilos de la sección de enlaces */
+.footer-section.links ul {
+    list-style: none; /* Sin puntos de lista */
+    padding: 0;
+}
+
+.footer-section.links ul li {
+    margin: 10px 0; /* Espacio entre enlaces */
+}
+
+/* Estilos de la sección de enlaces */
+.footer-section.links ul li a {
+    color: #000; /* Color negro para el texto */
+    text-decoration: none; /* Sin subrayado */
+    font-size: 1em; /* Tamaño de fuente */
+    transition: color 0.3s; /* Solo transición de color */
+    padding: 0; /* Sin padding extra */
+}
+
+.footer-section.links ul li a:hover {
+    color: #000000; /* Color ligeramente más oscuro en hover */
+    background-color: transparent; /* Sin fondo en hover */
+    border-radius: 0; /* Sin borde redondeado */
+}
+
+
+/* Redes sociales */
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icons a img {
+    width: 35px; /* Tamaño de íconos */
+    height: 35px;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.social-icons a img:hover {
+    transform: scale(1.1); /* Efecto hover */
+    opacity: 0.8; /* Opacidad al pasar el ratón */
+}
+
+/* Sección de ubicación y mapa */
+.footer-section.location iframe {
+    border-radius: 10px; /* Bordes redondeados para el mapa */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra */
+    margin-top: 10px;
+}
+
+/* Sección inferior del footer */
+.footer-bottom {
+    background-color: #f6f6f6;
+    color: #000000;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9em;
+    margin-top: 20px;
+}
+
+/* Estilos de los enlaces en la sección Sobre Nosotros */
+.footer-section.info ul li a {
+    color: #000; /* Color negro para el texto */
+    font-size: 1em; /* Tamaño de fuente */
+    padding: 0; /* Sin padding extra */
+    transition: color 0.3s; /* Suave transición de color en hover */
+}
+
+.footer-section.info ul li a:hover {
+    color: #333; /* Color ligeramente más oscuro al pasar el ratón */
+    background-color: transparent; /* Sin fondo de color */
+}
+

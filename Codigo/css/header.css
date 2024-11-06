@@ -1,0 +1,91 @@
+/* Estilo general del cuerpo */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilo de la barra de navegación */
+header {
+    background-color: #80a8cf; /* Color de fondo claro */
+}
+
+/* Estilo del contenedor del logo */
+.contenedor-logo {
+    display: flex;
+    align-items: center; /* Centra el logo y el nombre verticalmente */
+}
+
+/* Estilo del logo */
+.logo {
+    height: 80px; /* Altura del logo */
+    padding-right: 20px;
+}
+
+/* Estilo de la navegación */
+.navbar-nav {
+    display: flex; /* Mostrar elementos en fila */
+}
+
+/* Estilo de los enlaces de navegación */
+.nav-link {
+    color: #e4e5e7; /* Color de los enlaces */
+    text-decoration: none; /* Sin subrayado */
+    padding: 15px 20px; /* Espacio alrededor del enlace */
+    transition: background-color 0.3s; /* Transición suave */
+    font-size: 1.5em; /* Aumentar tamaño de letra */
+}
+
+/* Efecto hover en los enlaces de navegación */
+.nav-link:hover {
+    background-color: #e4e5e7; /* Fondo al pasar el ratón */
+}
+
+/* Estilo para los íconos del usuario */
+.user-actions {
+    display: flex; /* Usar flexbox para alinear los íconos */
+    align-items: center; /* Centra los íconos verticalmente */
+    margin-right: 20px;
+}
+
+/* Estilo de los enlaces de acciones del usuario */
+.user-actions .icon {
+    margin-left: 25px; /* Espacio entre íconos */
+    position: relative; /* Posiciona la cuenta del carrito */
+}
+
+/* Estilo para la cuenta del carrito */
+.carrito-count {
+    position: absolute; /* Posiciona la cuenta en la parte superior derecha */
+    top: -5px; /* Ajusta la posición vertical */
+    right: -10px; /* Ajusta la posición horizontal */
+    background-color: rgb(178, 41, 41); /* Fondo rojo para el número */
+    color: white; /* Color del texto */
+    border-radius: 50%; /* Bordes redondeados */
+    padding: 2px 5px; /* Espacio interno */
+    font-size: 0.8em; /* Tamaño de fuente */
+}
+
+/* Efecto de transición suave para los íconos */
+.user-actions img {
+    width: 35px; /* Ancho de los íconos */
+    height: 35px; /* Alto de los íconos */
+    transition: transform 0.3s; /* Transición suave */
+}
+
+/* Efecto hover para los íconos del usuario */
+.user-actions .icon:hover img {
+    transform: scale(1.1); /* Aumenta el tamaño al pasar el ratón */
+}
+
+.dropdown-menu {
+    position: absolute; /* Mantenerlo absoluto */
+    left: 0; /* Ajustar a la izquierda */
+    transform: translateX(-50%); /* Moverlo hacia la izquierda si es necesario */
+}
+
+/* Eliminar subrayado en el enlace de usuario */
+.user-actions .icon {
+    text-decoration: none !important; /* Sin subrayado */
+}
+
