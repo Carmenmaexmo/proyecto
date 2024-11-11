@@ -10,7 +10,6 @@
 <body>
 <main class="container mt-5" style="padding-top: 60px;" id="kebab-personalizado">
         <h1 class="text-center mb-4">Kebab Personalizado</h1>
-        
         <div class="row">
             <!-- Columna de Imagen, Descripción e Ingredientes -->
             <div class="col-md-6">

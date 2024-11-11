@@ -35,12 +35,12 @@
                     </li>
                 </ul>
                 <div class="user-actions">
-                    <a href="#cartera" class="icon" title="Cartera">
+                    <a href="?menu=cartera" class="icon" title="Cartera">
                         <img src="../imagenes/monedero.png" alt="Cartera">
                     </a>
-                    <a href="#carrito" class="icon" title="Carrito">
+                    <a href="?menu=carrito" class="icon" title="Carrito">
                         <img src="../imagenes/carrito.png" alt="Carrito">
-                        <span class="carrito-count">3</span> <!-- Número de artículos en el carrito -->
+                       <!-- <span class="carrito-count">3</span> --> <!-- Número de artículos en el carrito -->
                     </a>
                     <div class="nav-item dropdown">
                         <a href="#profile" class="icon dropdown-toggle" id="userDropdown" role="button"
@@ -48,11 +48,12 @@
                             <img src="../imagenes/usuario.png" alt="Usuario">
                         </a>
                         <div class="dropdown-menu" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#datos">Mis datos</a>
-                            <a class="dropdown-item" href="#historial">Historial Pedidos</a>
-                            <a class="dropdown-item" href="#cerrar-sesion">Cerrar Sesión</a>
+                            <a class="dropdown-item" href="?menu=misdatos">Mis datos</a>
+                            <a class="dropdown-item" href="?menu=historial">Historial Pedidos</a>
+                            <a class="dropdown-item" href="?menu=cerrar-sesion">Cerrar Sesión</a>
                         </div>
                     </div>
+                    <a href="?menu=login" class="btn btn-link" style="color: black; margin-left: 10px;">Login</a>
                 </div>
             </div>
         </nav>

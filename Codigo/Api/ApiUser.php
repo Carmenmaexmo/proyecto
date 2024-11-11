@@ -1,5 +1,5 @@
 <?php
-require_once('../Repositorios/conexion.php'); // Asegúrate de que DB esté definida en este archivo
+require_once('../Repositorios/conexion.php'); 
 require_once('../Repositorios/repoUsuario.php');
 
 class ApiUser {

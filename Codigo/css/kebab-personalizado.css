@@ -1,6 +1,6 @@
 /* Estilo principal */
-body{
-    background-color: #e8eff6;
+#cuerpo{
+    padding-bottom: 25px;
 }
 .ingredient-img {
     width: 60px;
