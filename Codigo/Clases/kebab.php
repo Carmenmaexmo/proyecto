@@ -1,38 +1,75 @@
 <?php
-require_once 'config/db.php';
-
 class Kebab {
-    private $conn;
+    private $idKebab;
+    private $nombre;
+    private $foto;
+    private $precio;
+    private $descripcion;
+    private $ingredientes =[];
 
-    public function __construct($conn) {
-        $this->conn = $conn;
+    // Constructor
+    public function __construct($idKebab, $nombre, $foto, $precio, $descripcion, $ingredientes=[]) {
+        $this->idKebab = $idKebab;
+        $this->nombre = $nombre;
+        $this->foto = $foto;
+        $this->precio = $precio;
+        $this->descripcion = $descripcion;
+        $this->ingredientes = $ingredientes;
     }
 
-    // Crear un kebab predefinido
-    public function create($data) {
-        $query = "INSERT INTO kebab (nombre, foto, precio, descripcion) VALUES (:nombre, :foto, :precio, :descripcion)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':foto', $data['foto']);
-        $stmt->bindParam(':precio', $data['precio']);
-        $stmt->bindParam(':descripcion', $data['descripcion']);
-        $stmt->execute();
+    //Metodo para agregar ingredientes
+    public function addIngredientes(Ingredientes $ingredientes) {
+        $this->ingredientes[] = $ingredientes;
     }
 
-    // Obtener todos los kebabs
-    public function getAll() {
-        $query = "SELECT * FROM kebab";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Getters
+    public function getIdKebab() {
+        return $this->idKebab;
     }
 
-    // Obtener un kebab por ID
-    public function getById($id) {
-        $query = "SELECT * FROM kebab WHERE idKebab = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    public function getNombre() {
+        return $this->nombre;
     }
+
+    public function getFoto() {
+        return $this->foto;
+    }
+
+    public function getPrecio() {
+        return $this->precio;
+    }
+
+    public function getDescripcion() {
+        return $this->descripcion;
+    }
+
+    public function getIngredientes() {
+        return $this->ingredientes;
+    }
+
+    // Setters
+    public function setIdKebab($idKebab) {
+        $this->idKebab = $idKebab;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function setFoto($foto) {
+        $this->foto = $foto;
+    }
+
+    public function setPrecio($precio) {
+        $this->precio = $precio;
+    }
+
+    public function setDescripcion($descripcion) {
+        $this->descripcion = $descripcion;
+    }
+
+    public function setIngredientes(Ingredientes $ingredientes) {
+        $this->ingredientes = $ingredientes;
+    }
+
 }

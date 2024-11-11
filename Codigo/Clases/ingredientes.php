@@ -1,31 +1,74 @@
 <?php
-require_once 'config/db.php';
-
 class Ingredientes {
-    private $conn;
+    private $idIngrediente;
+    private $nombre;
+    private $foto;
+    private $precio;
+    private $tipo;
+    private $alergenos=[];
 
-    public function __construct($conn) {
-        $this->conn = $conn;
+    // Constructor
+    public function __construct($idIngrediente, $nombre, $foto, $precio, $tipo, $alergenos = []) {
+        $this->idIngrediente = $idIngrediente;
+        $this->nombre = $nombre;
+        $this->foto = $foto;
+        $this->precio = $precio;
+        $this->tipo = $tipo;
+        $this->alergenos = $alergenos;
     }
 
-    // Crear un ingrediente
-    public function create($data) {
-        $query = "INSERT INTO ingredientes (nombre, foto, precio, tipo, descripcion)
-                  VALUES (:nombre, :foto, :precio, :tipo, :descripcion)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':foto', $data['foto']);
-        $stmt->bindParam(':precio', $data['precio']);
-        $stmt->bindParam(':tipo', $data['tipo']);
-        $stmt->bindParam(':descripcion', $data['descripcion']);
-        $stmt->execute();
+    //Metodo para agregar alergenos
+    public function addAlergenos(Alergenos $alergenos) {
+        $this->alergenos[] = $alergenos;
     }
 
-    // Obtener todos los ingredientes
-    public function getAll() {
-        $query = "SELECT * FROM ingredientes";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Getters
+    public function getIdIngrediente() {
+        return $this->idIngrediente;
+    }
+
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function getFoto() {
+        return $this->foto;
+    }
+
+    public function getPrecio() {
+        return $this->precio;
+    }
+
+    public function getTipo() {
+        return $this->tipo;
+    }
+
+    public function getAlergenos() {
+        return $this->alergenos;
+    }
+
+    // Setters
+    public function setIdIngrediente($idIngrediente) {
+        $this->idIngrediente = $idIngrediente;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function setFoto($foto) {
+        $this->foto = $foto;
+    }
+
+    public function setPrecio($precio) {
+        $this->precio = $precio;
+    }
+
+    public function setTipo($tipo) {
+        $this->tipo = $tipo;
+    }
+
+    public function setAlergenos(Alergenos $alergenos) {
+        $this->alergenos = $alergenos;
     }
 }

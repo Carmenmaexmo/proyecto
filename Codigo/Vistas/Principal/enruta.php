@@ -12,6 +12,12 @@ if (isset($_GET['menu'])) {
     if ($_GET['menu'] == "kebab-personalizado") {
         require_once './Vistas/Mantenimiento/kebab-personalizado.php';
     }
+    if ($_GET['menu'] == "contacto") {
+        require_once './Vistas/Mantenimiento/contacto.php';
+    }
+    if ($_GET['menu'] == "cartera") {
+        require_once './Vistas/Mantenimiento/cartera.php';
+    }
     if ($_GET['menu'] == "login") {
         require_once './Vistas/Login/autentifica.php';
     }

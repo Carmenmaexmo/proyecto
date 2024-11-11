@@ -1,51 +1,112 @@
 <?php
-// classes/User.php
-
-require_once 'config/db.php';
 
 class Usuario {
-    private $conn;
+    private $idUsuario;
+    private $nombre;
+    private $ubicacion;
+    private $telefono;
+    private $contraseña;
+    private $foto;
+    private $monedero;
+    private $carrito;
+    private $alergenos=[];
+    private $rol;
 
-    public function __construct($conn) {
-        $this->conn = $conn;
-    }
-    
-    // Crear un nuevo usuario
-    public function create($data) {
-        $query = "INSERT INTO usuario (nombre, ubicacion, telefono, contraseña, direccion, monedero, carrito)
-                  VALUES (:nombre, :ubicacion, :telefono, :contraseña, :direccion, :monedero, :carrito)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->bindParam(':ubicacion', $data['ubicacion']);
-        $stmt->bindParam(':telefono', $data['telefono']);
-        $stmt->bindParam(':contraseña', password_hash($data['contraseña'], PASSWORD_DEFAULT));
-        $stmt->bindParam(':direccion', $data['direccion']);
-        $stmt->bindParam(':monedero', $data['monedero']);
-        $stmt->bindParam(':carrito', json_encode($data['carrito']));
-        $stmt->execute();
-    }
-
-    // Login del usuario
-    public function login($data) {
-        $query = "SELECT * FROM usuario WHERE nombre = :nombre";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nombre', $data['nombre']);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($data['contraseña'], $user['contraseña'])) {
-            return $user;  // Devuelve el usuario para luego generar el token
-        }
-        return false;
+    public function __construct($idUsuario, $nombre, $ubicacion, $telefono, $contraseña, $foto, $monedero, $carrito, $alergenos = [], $rol) {
+        $this->idUsuario = $idUsuario;
+        $this->nombre = $nombre;
+        $this->ubicacion = $ubicacion;
+        $this->telefono = $telefono;
+        $this->contraseña = $contraseña;
+        $this->foto = $foto;
+        $this->monedero = $monedero;
+        $this->carrito = $carrito;
+        $this->alergenos = $alergenos;
+        $this->rol = $rol;
     }
 
-    // Obtener un usuario por ID
-    public function getById($id) {
-        $query = "SELECT * FROM usuario WHERE idUsuario = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    //Metodo para agregar alergenos
+    public function addAlergenos(Alergenos $alergenos) {
+        $this->alergenos[] = $alergenos;
+        // También añadimos al usuario al alérgeno
+        $alergenos->addUsuario($this);
+    }
+
+
+    // Getters and Setters
+    public function getIdUsuario() {
+        return $this->idUsuario;
+    }
+
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function getUbicacion() {
+        return $this->ubicacion;
+    }
+
+    public function getTelefono() {
+        return $this->telefono;
+    }
+
+    public function getContraseña() {
+        return $this->contraseña;
+    }
+
+    public function getFoto() {
+        return $this->foto;
+    }
+
+    public function getMonedero() {
+        return $this->monedero;
+    }
+
+    public function getCarrito() {
+        return $this->carrito;
+    }
+
+    public function getAlergenos() {
+        return $this->alergenos;
+    }
+
+    public function getRol() {
+        return $this->rol;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function setUbicacion($ubicacion) {
+        $this->ubicacion = $ubicacion;
+    }
+
+    public function setTelefono($telefono) {
+        $this->telefono = $telefono;
+    }
+
+    public function setContraseña($contraseña) {
+        $this->contraseña = $contraseña;
+    }
+
+    public function setFoto($foto) {
+        $this->foto = $foto;
+    }
+
+    public function setMonedero($monedero) {
+        $this->monedero = $monedero;
+    }
+
+    public function setCarrito($carrito) {
+        $this->carrito = $carrito;
+    }
+
+    public function setAlergenos(Alergenos $alergenos) {
+        $this->alergenos = $alergenos;
+    }
+
+    public function setRol($rol) {
+        $this->rol = $rol;
     }
 }
-

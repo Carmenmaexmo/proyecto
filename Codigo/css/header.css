@@ -5,11 +5,6 @@ body {
     padding: 0;
 }
 
-/* Estilo de la barra de navegación */
-header {
-    background-color: #80a8cf; /* Color de fondo claro */
-}
-
 /* Estilo del contenedor del logo */
 .contenedor-logo {
     display: flex;
