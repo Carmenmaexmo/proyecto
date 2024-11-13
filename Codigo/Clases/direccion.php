@@ -4,18 +4,13 @@ class Direccion {
     private $idDireccion;
     private $direccion;
     private $estado;
-    private $usuario = [];
+    private $usuario;
 
-    public function __construct($idDireccion, $direccion, $estado, $usuario = []) {
+    public function __construct($idDireccion, $direccion, $estado, Usuario $usuario) {
         $this->idDireccion = $idDireccion;
         $this->direccion = $direccion;
         $this->estado = $estado;
-        $this->usuario = $usuario;
-    }
-
-    //Metodo para agregar usuario
-    public function addUsuario(Usuario $usuario) {
-        $this->usuario[] = $usuario;
+        $this->usuario = $usuario->getidUsuario();
     }
 
     // Getters

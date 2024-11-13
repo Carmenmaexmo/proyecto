@@ -5,14 +5,14 @@ class Pedidos {
     private $estado;
     private $fechaHora;
     private $precioTotal;
-    private $usuario= [];
+    private $usuario;
 
-    public function __construct($idPedidos, $estado, $fechaHora, $precioTotal,$usuario  = []) {
+    public function __construct($idPedidos, $estado, $fechaHora, $precioTotal, Usuario $usuario) {
         $this->idPedidos = $idPedidos;
         $this->estado = $estado;
         $this->fechaHora = $fechaHora;
         $this->precioTotal = $precioTotal;
-        $this->usuario = $usuario;
+        $this->usuario = $usuario->getIdUsuario();
     }
 
     //Metodo para agregar usuario

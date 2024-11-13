@@ -9,10 +9,10 @@ class Usuario {
     private $foto;
     private $monedero;
     private $carrito;
-    private $alergenos=[];
     private $rol;
+    private $alergenos=[];
 
-    public function __construct($idUsuario, $nombre, $ubicacion, $telefono, $contraseña, $foto, $monedero, $carrito, $alergenos = [], $rol) {
+    public function __construct($idUsuario, $nombre, $ubicacion, $telefono, $contraseña, $foto, $monedero, $carrito, $rol, $alergenos = []) {
         $this->idUsuario = $idUsuario;
         $this->nombre = $nombre;
         $this->ubicacion = $ubicacion;
@@ -21,19 +21,12 @@ class Usuario {
         $this->foto = $foto;
         $this->monedero = $monedero;
         $this->carrito = $carrito;
-        $this->alergenos = $alergenos;
         $this->rol = $rol;
+        $this->alergenos = $alergenos;
     }
 
-    //Metodo para agregar alergenos
-    public function addAlergenos(Alergenos $alergenos) {
-        $this->alergenos[] = $alergenos;
-        // También añadimos al usuario al alérgeno
-        $alergenos->addUsuario($this);
-    }
+    // Getters
 
-
-    // Getters and Setters
     public function getIdUsuario() {
         return $this->idUsuario;
     }
@@ -74,6 +67,15 @@ class Usuario {
         return $this->rol;
     }
 
+      //Metodo para agregar alergenos
+      public function addAlergenos(Alergenos $alergenos) {
+        $this->alergenos[] = $alergenos;
+        // También añadimos al usuario al alérgeno
+        $alergenos->addUsuario($this);
+    }
+
+    // Setters
+
     public function setNombre($nombre) {
         $this->nombre = $nombre;
     }
@@ -102,11 +104,13 @@ class Usuario {
         $this->carrito = $carrito;
     }
 
+    public function setRol($rol) {
+        $this->rol = $rol;
+    }
+
     public function setAlergenos(Alergenos $alergenos) {
         $this->alergenos = $alergenos;
     }
 
-    public function setRol($rol) {
-        $this->rol = $rol;
-    }
+   
 }

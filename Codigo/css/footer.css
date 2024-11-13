@@ -2,7 +2,7 @@
 .footer {
     background-color: #dfeffb;/* Fondo similar al header */
     color: #e4e5e7; /* Texto claro */
-    padding: 40px 0; /* Espaciado más amplio */
+    padding: 20px 0; /* Espaciado más amplio */
     font-family: 'Arial', sans-serif;
 }
 
@@ -22,14 +22,14 @@
 }
 
 .footer-section h4 {
-    font-size: 1.5em;
+    font-size: 1em;
     color: #000000; /* Color similar al header */
     margin-bottom: 15px;
 }
 
 .footer-section p {
     font-size: 1em;
-    line-height: 1.5em;
+    line-height: 1em;
 }
 
 /* Estilos de la sección de enlaces */

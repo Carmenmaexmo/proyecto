@@ -5,20 +5,15 @@ class LineaDePedido {
     private $cantidad;
     private $precio;
     private $lineaPedido; // Este campo contendrá el JSON
-    private $pedido =[];
+    private $pedido;
     private $kebab;
 
     public function __construct($idLineaDePedido, $cantidad, $precio, Kebab $kebab, Pedidos $pedido) {
         $this->idLineaDePedido = $idLineaDePedido;
         $this->cantidad = $cantidad;
         $this->precio = $precio;
-        $this->pedido = $pedido; 
-        $this->lineaPedido = $this->crearLineaPedidoJSON($kebab->getIdKebab(),$kebab->getNombre(), $cantidad, $kebab->getPrecio());
-    }
-
-    //Metodo para agregar pedido
-    public function addPedido(Pedidos $pedido) {
-        $this->pedido[] = $pedido;
+        $this->pedido = $pedido->getIdPedidos(); 
+        $this->lineaPedido = $this->crearLineaPedidoJSON($kebab->getIdKebab(),$kebab->getNombre(), $kebab->getIngredientes() , $cantidad, $kebab->getPrecio());
     }
 
     //Metodo para agregar kebab
@@ -31,6 +26,7 @@ class LineaDePedido {
         $data = [
             'idKebab' => $kebab->getIdKebab(),
             'nombreKebab' => $kebab->getNombre(),
+            'ingredientes' => $kebab->getIngredientes(),
             'cantidad' => $cantidad,
             'precio' => $kebab->getPrecio()
         ];

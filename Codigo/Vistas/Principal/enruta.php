@@ -18,6 +18,9 @@ if (isset($_GET['menu'])) {
     if ($_GET['menu'] == "cartera") {
         require_once './Vistas/Mantenimiento/cartera.php';
     }
+    if ($_GET['menu'] == "carrito") {
+        require_once './Vistas/Mantenimiento/carrito.php';
+    }
     if ($_GET['menu'] == "login") {
         require_once './Vistas/Login/autentifica.php';
     }
