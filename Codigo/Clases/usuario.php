@@ -10,9 +10,10 @@ class Usuario {
     private $monedero;
     private $carrito;
     private $rol;
+    private $correo;
     private $alergenos=[];
 
-    public function __construct($idUsuario, $nombre, $ubicacion, $telefono, $contraseña, $foto, $monedero, $carrito, $rol, $alergenos = []) {
+    public function __construct($idUsuario, $nombre, $ubicacion, $telefono, $contraseña, $foto, $monedero, $carrito, $rol, $correo, $alergenos = []) {
         $this->idUsuario = $idUsuario;
         $this->nombre = $nombre;
         $this->ubicacion = $ubicacion;
@@ -22,6 +23,7 @@ class Usuario {
         $this->monedero = $monedero;
         $this->carrito = $carrito;
         $this->rol = $rol;
+        $this->correo = $correo;
         $this->alergenos = $alergenos;
     }
 
@@ -65,6 +67,10 @@ class Usuario {
 
     public function getRol() {
         return $this->rol;
+    }
+
+    public function getCorreo() {
+        return $this->correo;
     }
 
       //Metodo para agregar alergenos
@@ -112,5 +118,8 @@ class Usuario {
         $this->alergenos = $alergenos;
     }
 
+    public function setCorreo($correo) {
+        $this->correo = $correo;
+    }
    
 }

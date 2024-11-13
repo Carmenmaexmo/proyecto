@@ -47,12 +47,13 @@ class ApiUser {
 
         $usuarioData = [
             'nombre' => $data['nombre'],
-            'ubicacion' => $data['ubicacion'],
+            'ubicacion' => $data['ubicacion'] ?? null,
             'telefono' => $data['telefono'],
             'contraseña' => $data['contraseña'],
             'foto' => $data['foto'] ?? null,
             'monedero' => $data['monedero'],
-            'carrito' => $data['carrito'],
+            'carrito' => $data['carrito'] ?? null,
+            'correo' => $data['correo'],
             'rol' => $data['rol'] ?? 'cliente'
         ];
 

@@ -18,18 +18,30 @@ class RepoUsuario {
         // Convertir el carrito a JSON
         $carritoJSON = json_encode($usuarioData['carrito']);
 
-      // Insertar el usuario en la tabla Usuario
-      $stmt = $this->conexion->prepare("INSERT INTO Usuario (nombre, ubicacion, telefono, contraseña, foto, monedero, carrito, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-      $stmt->bind_param("sssssiss", 
-          $usuarioData['nombre'],
-          $usuarioData['ubicacion'],
-          $usuarioData['telefono'],
-          $usuarioData['contraseña'],
-          $usuarioData['foto'],
-          $usuarioData['monedero'],
-          $carritoJSON,
-          $usuarioData['rol']
-      );
+        // Asignar las variables primero
+        $nombre = $usuarioData['nombre'];
+        $ubicacion = isset($usuarioData['ubicacion']) && $usuarioData['ubicacion'] != "" ? $usuarioData['ubicacion'] : null;
+        $telefono = $usuarioData['telefono'];
+        $contraseña = $usuarioData['contraseña'];
+        $foto = isset($usuarioData['foto']) && $usuarioData['foto'] != "" ? $usuarioData['foto'] : null;
+        $monedero = $usuarioData['monedero'];
+        $correo = $usuarioData['correo'];
+        $rol = $usuarioData['rol'];
+        $carritoJSON = isset($usuarioData['carrito']) ? json_encode($usuarioData['carrito']) : null;
+
+        // Insertar el usuario en la tabla Usuario
+        $stmt = $this->conexion->prepare("INSERT INTO Usuario (nombre, ubicacion, telefono, contraseña, foto, monedero, carrito, rol, correo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssisss", 
+            $nombre,
+            $ubicacion,
+            $telefono,
+            $contraseña,
+            $foto,
+            $monedero,
+            $carritoJSON,
+            $rol,
+            $correo
+        );
         
         $stmt->execute();
 
@@ -72,7 +84,7 @@ class RepoUsuario {
         $this->conexion->begin_transaction();
 
         // Actualizar los datos del usuario en la tabla Usuario
-        $stmt = $this->conexion->prepare("UPDATE Usuario SET nombre = ?, ubicacion = ?, telefono = ?, contraseña = ?, foto = ?, monedero = ?, carrito = ?, rol = ? WHERE idUsuario = ?");
+        $stmt = $this->conexion->prepare("UPDATE Usuario SET nombre = ?, ubicacion = ?, telefono = ?, contraseña = ?, foto = ?, monedero = ?, carrito = ?, rol = ? , correo = ? WHERE idUsuario = ?");
         $carritoJSON = json_encode($usuarioData['carrito']);
         $stmt->bind_param("sssssissi", 
             $usuarioData['nombre'],
@@ -83,6 +95,7 @@ class RepoUsuario {
             $usuarioData['monedero'],
             $carritoJSON,
             $usuarioData['rol'],
+            $usuarioData['correo'],
             $usuarioId
         );
 
