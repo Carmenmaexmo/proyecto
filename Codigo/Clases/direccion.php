@@ -6,7 +6,7 @@ class Direccion {
     private $estado;
     private $usuario;
 
-    public function __construct($idDireccion, $direccion, $estado, Usuario $usuario) {
+    public function __construct($idDireccion, $direccion, $estado, $usuario) {
         $this->idDireccion = $idDireccion;
         $this->direccion = $direccion;
         $this->estado = $estado;

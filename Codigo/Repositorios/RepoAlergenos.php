@@ -1,5 +1,5 @@
 <?php
-require_once 'conexion.php';
+require_once 'Conexion.php';
 require_once '../Clases/Alergenos.php';
 require_once '../Clases/Ingredientes.php';
 require_once '../Clases/Usuario.php';

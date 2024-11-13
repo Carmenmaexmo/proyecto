@@ -7,7 +7,7 @@ class Pedidos {
     private $precioTotal;
     private $usuario;
 
-    public function __construct($idPedidos, $estado, $fechaHora, $precioTotal, Usuario $usuario) {
+    public function __construct($idPedidos, $estado, $fechaHora, $precioTotal, $usuario) {
         $this->idPedidos = $idPedidos;
         $this->estado = $estado;
         $this->fechaHora = $fechaHora;

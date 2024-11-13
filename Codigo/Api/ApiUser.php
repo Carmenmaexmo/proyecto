@@ -1,6 +1,6 @@
 <?php
-require_once('../Repositorios/conexion.php'); 
-require_once('../Repositorios/repoUsuario.php');
+require_once('../Repositorios/Conexion.php'); 
+require_once('../Repositorios/RepoUsuario.php');
 
 class ApiUser {
     private $repoUsuario;

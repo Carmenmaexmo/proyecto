@@ -8,7 +8,7 @@ class LineaDePedido {
     private $pedido;
     private $kebab;
 
-    public function __construct($idLineaDePedido, $cantidad, $precio, Kebab $kebab, Pedidos $pedido) {
+    public function __construct($idLineaDePedido, $cantidad, $precio, Kebab $kebab, $pedido) {
         $this->idLineaDePedido = $idLineaDePedido;
         $this->cantidad = $cantidad;
         $this->precio = $precio;
