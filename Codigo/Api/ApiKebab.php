@@ -50,7 +50,7 @@ class ApiKebab {
 
             case 'PUT':
                 // Actualizar un kebab
-                $data = json_decode(file_get_contents("php://input"), true); // Cambia parse_str a json_decode
+                $data = json_decode(file_get_contents("php://input"), true); 
                 if ($idKebab && $data) {
                     echo $this->updateKebab($idKebab, $data);
                 } else {
