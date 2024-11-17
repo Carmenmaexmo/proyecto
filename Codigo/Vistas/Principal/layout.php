@@ -29,8 +29,6 @@
         <?php
            require_once './Vistas/Principal/enruta.php';
         ?>
-        <link rel="stylesheet" href="./css/inicio.css">
-  
         </div>
     </section>
 

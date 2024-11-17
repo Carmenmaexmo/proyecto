@@ -7,8 +7,8 @@
 </head>
 <body>
 <main>
-    <section id="contacto" class="container mt-5" >
-        <h1 class="section-title">Contacto</h1>
+    <section id="contacto" class="container mt-5" style="padding: 12vh 0;">
+        <h1 class="section-title" style="min-height: 12vh;">Contacto</h1>
         <div class="row">
             <!-- Información de contacto -->
             <div class="col-md-6">

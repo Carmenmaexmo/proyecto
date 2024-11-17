@@ -43,6 +43,14 @@ class RepoIngredientes {
         return $stmt->affected_rows > 0;
     }
 
+    // Función para eliminar los alérgenos de un ingrediente
+    public function deleteAlergenosFromIngrediente($idIngrediente) {
+        $query = "DELETE FROM ingredientes_alergenos WHERE idIngrediente = ?";
+        $stmt = $this->conexion->prepare($query);
+        $stmt->bind_param("i", $idIngrediente);
+        $stmt->execute();
+    }
+
     // Eliminar un ingrediente
     public function deleteIngrediente($idIngrediente) {
         $this->removeAlergenosFromIngrediente($idIngrediente);

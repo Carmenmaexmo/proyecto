@@ -1,3 +1,9 @@
+<?php
+session_start(); // Iniciamos la sesión para verificar el rol del usuario
+$usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : null;
+$rol = isset($_SESSION['rol']) ? $_SESSION['rol'] : null;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +39,21 @@
                     <li class="nav-item">
                         <a class="nav-link" href="?menu=contacto">Contacto</a>
                     </li>
+
+                    <!-- Aquí comprobamos si el rol es 'administrador' -->
+                    <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] == 'administrador'): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Mantenimiento
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="?menu=mantenimiento-kebabs">Mantenimiento Kebabs</a>
+                                <a class="dropdown-item" href="?menu=mantenimiento-ingredientes">Mantenimiento Ingredientes</a>
+                                <a class="dropdown-item" href="?menu=mantenimiento-pedidos">Mantenimiento Pedidos</a>
+                            </div>
+                        </li>
+                    <?php endif; ?>
                 </ul>
                 <div class="user-actions">
                     <a href="?menu=cartera" class="icon" title="Cartera">
@@ -40,7 +61,6 @@
                     </a>
                     <a href="?menu=carrito" class="icon" title="Carrito">
                         <img src="../imagenes/carrito.png" alt="Carrito">
-                       <!-- <span class="carrito-count">3</span> --> <!-- Número de artículos en el carrito -->
                     </a>
                     <div class="nav-item dropdown">
                         <a href="#profile" class="icon dropdown-toggle" id="userDropdown" role="button"

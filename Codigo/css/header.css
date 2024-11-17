@@ -75,8 +75,6 @@ body {
 
 .dropdown-menu {
     position: absolute; /* Mantenerlo absoluto */
-    left: 0; /* Ajustar a la izquierda */
-    transform: translateX(-50%); /* Moverlo hacia la izquierda si es necesario */
 }
 
 /* Eliminar subrayado en el enlace de usuario */

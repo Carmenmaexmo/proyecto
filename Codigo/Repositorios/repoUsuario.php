@@ -55,7 +55,6 @@ class RepoUsuario {
 
         // Obtener el ID del usuario recién insertado
         $usuarioId = $this->conexion->insert_id;
-        echo "Usuario creado con ID: $usuarioId\n";  // Depuración
 
         // Asociar los alérgenos al usuario en la tabla intermedia Usuario_has_Alergenos
         $stmtAlergenos = $this->conexion->prepare("INSERT INTO Usuario_has_Alergenos (Usuario_idUsuario, Alergenos_idAlergenos) VALUES (?, ?)");
@@ -78,6 +77,7 @@ class RepoUsuario {
 
         return $usuarioId;
     }
+    
     // Método para actualizar un usuario y sus alérgenos
     public function updateUsuario($usuarioId, $usuarioData, $alergenos) {
         // Iniciar una transacción
