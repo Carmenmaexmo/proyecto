@@ -1,14 +1,13 @@
 <?php
 require_once '../Repositorios/Conexion.php';
-require_once '../Repositorios/RepoIngredientes.php';
-require_once '../Clases/Ingredientes.php';
+require_once '../Repositorios/RepoAlergenos.php';
 require_once '../Clases/Alergenos.php';
 
-class ApiIngredientes {
-    private $repoIngredientes;
+class ApiAlergenos {
+    private $repoAlergenos;
 
     public function __construct($db) {
-        $this->repoIngredientes = new RepoIngredientes($db);
+        $this->repoAlergenos = new RepoAlergenos($db);
     }
 
     public function handleRequest() {
@@ -18,44 +17,39 @@ class ApiIngredientes {
         // Obtención del endpoint
         $url = $_SERVER['REQUEST_URI'];
         $urlParts = explode('/', trim($url, '/'));
-        $idIngrediente = isset($urlParts[4]) ? (int)$urlParts[4] : null; 
+        $idAlergeno = isset($urlParts[4]) ? (int)$urlParts[4] : null; 
 
         // Switch para manejar las peticiones HTTP
         switch ($method) {
             case 'POST':
-                if (isset($urlParts[5]) && $urlParts[5] === 'alergenos') {
-                    $idAlergeno = (int)$urlParts[6];
-                    echo $this->addAlergenoToIngrediente($idIngrediente, $idAlergeno);
-                } else {
-                    $data = json_decode(file_get_contents("php://input"), true);
-                    echo $this->createIngrediente($data);
-                }
+                $data = json_decode(file_get_contents("php://input"), true);
+                echo $this->createAlergeno($data);
                 break;
 
             case 'GET':
-                if ($idIngrediente) {
-                    echo $this->getIngrediente($idIngrediente);
+                if ($idAlergeno) {
+                    echo $this->getAlergeno($idAlergeno);
                 } else {
-                    echo $this->getIngredientes();
+                    echo $this->getAllAlergenos();
                 }
                 break;
 
             case 'PUT':
-                if ($idIngrediente) {
+                if ($idAlergeno) {
                     parse_str(file_get_contents("php://input"), $data);
-                    echo $this->updateIngrediente($idIngrediente, $data);
+                    echo $this->updateAlergeno($idAlergeno, $data);
                 } else {
                     http_response_code(400);
-                    echo json_encode(["status" => "error", "message" => "ID de ingrediente no proporcionado"]);
+                    echo json_encode(["status" => "error", "message" => "ID de alérgeno no proporcionado"]);
                 }
                 break;
 
             case 'DELETE':
-                if ($idIngrediente) {
-                    echo $this->deleteIngrediente($idIngrediente);
+                if ($idAlergeno) {
+                    echo $this->deleteAlergeno($idAlergeno);
                 } else {
                     http_response_code(400);
-                    echo json_encode(["status" => "error", "message" => "ID de ingrediente no proporcionado"]);
+                    echo json_encode(["status" => "error", "message" => "ID de alérgeno no proporcionado"]);
                 }
                 break;
 
@@ -65,83 +59,69 @@ class ApiIngredientes {
         }
     }
 
-    private function createIngrediente($data) {
-        if (!isset($data['nombre']) || !isset($data['precio']) || !isset($data['tipo'])) {
-            return $this->sendResponse(400, ["status" => "error", "message" => "Faltan datos obligatorios (nombre, precio, tipo)"]);
+    private function createAlergeno($data) {
+        if (!isset($data['nombre']) || !isset($data['descripcion'])) {
+            return $this->sendResponse(400, ["status" => "error", "message" => "Faltan datos obligatorios (nombre, descripción)"]);
         }
 
-        $alergenosIds = isset($data['alergenos']) ? $data['alergenos'] : [];
-        $ingredienteData = [
+        $alergenoData = [
             'nombre' => $data['nombre'],
             'foto' => $data['foto'] ?? null,
-            'precio' => $data['precio'],
-            'tipo' => $data['tipo']
+            'descripcion' => $data['descripcion']
         ];
 
-        $idIngrediente = $this->repoIngredientes->createIngrediente($ingredienteData, $alergenosIds);
+        $idAlergeno = $this->repoAlergenos->createAlergeno($alergenoData);
 
-        if ($idIngrediente) {
-            return $this->sendResponse(201, ["status" => "success", "message" => "Ingrediente creado correctamente", "id" => $idIngrediente]);
+        if ($idAlergeno) {
+            return $this->sendResponse(201, ["status" => "success", "message" => "Alérgeno creado correctamente", "id" => $idAlergeno]);
         }
 
-        return $this->sendResponse(500, ["status" => "error", "message" => "Error al crear ingrediente"]);
+        return $this->sendResponse(500, ["status" => "error", "message" => "Error al crear alérgeno"]);
     }
 
-    private function getIngredientes() {
-        $ingredientes = $this->repoIngredientes->getAllIngredientes();
-        return $this->sendResponse(200, $ingredientes);
+    private function getAllAlergenos() {
+        $alergenos = $this->repoAlergenos->getAllAlergenos();
+        return $this->sendResponse(200, $alergenos);
     }
 
-    private function getIngrediente($idIngrediente) {
-        $ingrediente = $this->repoIngredientes->getIngredienteById($idIngrediente);
+    private function getAlergeno($idAlergeno) {
+        $alergeno = $this->repoAlergenos->getAlergenoById($idAlergeno);
 
-        if ($ingrediente) {
-            return $this->sendResponse(200, $ingrediente);
+        if ($alergeno) {
+            return $this->sendResponse(200, $alergeno);
         }
 
-        return $this->sendResponse(404, ["status" => "error", "message" => "Ingrediente no encontrado"]);
+        return $this->sendResponse(404, ["status" => "error", "message" => "Alérgeno no encontrado"]);
     }
 
-    private function updateIngrediente($idIngrediente, $data) {
-        if (!isset($data['nombre']) || !isset($data['precio']) || !isset($data['tipo'])) {
-            return $this->sendResponse(400, ["status" => "error", "message" => "Faltan datos obligatorios (nombre, precio, tipo)"]);
+    private function updateAlergeno($idAlergeno, $data) {
+        if (!isset($data['nombre']) || !isset($data['descripcion'])) {
+            return $this->sendResponse(400, ["status" => "error", "message" => "Faltan datos obligatorios (nombre, descripción)"]);
         }
 
-        $alergenosIds = isset($data['alergenos']) ? $data['alergenos'] : [];
-        $ingredienteData = [
+        $alergenoData = [
             'nombre' => $data['nombre'],
             'foto' => $data['foto'] ?? null,
-            'precio' => $data['precio'],
-            'tipo' => $data['tipo']
+            'descripcion' => $data['descripcion']
         ];
 
-        $updated = $this->repoIngredientes->updateIngrediente($idIngrediente, $ingredienteData, $alergenosIds);
+        $updated = $this->repoAlergenos->updateAlergeno($idAlergeno, $alergenoData);
 
         if ($updated) {
-            return $this->sendResponse(200, ["status" => "success", "message" => "Ingrediente actualizado correctamente"]);
+            return $this->sendResponse(200, ["status" => "success", "message" => "Alérgeno actualizado correctamente"]);
         }
 
-        return $this->sendResponse(500, ["status" => "error", "message" => "Error al actualizar ingrediente"]);
+        return $this->sendResponse(500, ["status" => "error", "message" => "Error al actualizar alérgeno"]);
     }
 
-    private function deleteIngrediente($idIngrediente) {
-        $deleted = $this->repoIngredientes->deleteIngrediente($idIngrediente);
+    private function deleteAlergeno($idAlergeno) {
+        $deleted = $this->repoAlergenos->deleteAlergeno($idAlergeno);
 
         if ($deleted) {
-            return $this->sendResponse(200, ["status" => "success", "message" => "Ingrediente eliminado correctamente"]);
+            return $this->sendResponse(200, ["status" => "success", "message" => "Alérgeno eliminado correctamente"]);
         }
 
-        return $this->sendResponse(500, ["status" => "error", "message" => "Error al eliminar ingrediente"]);
-    }
-
-    private function addAlergenoToIngrediente($idIngrediente, $idAlergeno) {
-        $added = $this->repoIngredientes->addAlergenoToIngrediente($idIngrediente, $idAlergeno);
-
-        if ($added) {
-            return $this->sendResponse(200, ["status" => "success", "message" => "Alérgeno asociado correctamente al ingrediente"]);
-        }
-
-        return $this->sendResponse(500, ["status" => "error", "message" => "Error al asociar alérgeno al ingrediente"]);
+        return $this->sendResponse(500, ["status" => "error", "message" => "Error al eliminar alérgeno"]);
     }
 
     private function sendResponse($statusCode, $response) {
@@ -151,6 +131,7 @@ class ApiIngredientes {
     }
 }
 
+// Inicialización y manejo de la API
 $db = new DB();
-$apiIngredientes = new ApiIngredientes($db);
-$apiIngredientes->handleRequest();
+$apiAlergenos = new ApiAlergenos($db);
+$apiAlergenos->handleRequest();

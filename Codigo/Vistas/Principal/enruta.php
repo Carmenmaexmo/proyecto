@@ -18,7 +18,9 @@ if (isset($_GET['menu'])) {
         require_once './Vistas/Login/autentifica.php';
     } elseif ($_GET['menu'] == "registrarse") {
         require_once './Vistas/Login/registrarse.php';
-    } elseif ($_GET['menu'] == "cerrarsesion") {
+    } elseif ($_GET['menu'] == "misdatos") {
+        require_once './Vistas/Mantenimiento/misdatos.php';
+    } elseif ($_GET['menu'] == "cerrar-sesion") {
         require_once './Vistas/Login/cerrarsesion.php';
     } elseif ($_GET['menu'] == "mantenimiento-kebabs") {
         require_once './Vistas/Mantenimiento/mantenimientoKebabs.php';

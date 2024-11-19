@@ -32,7 +32,7 @@
 
     <div class="login-container">
         <h2 class="login-title">Iniciar Sesión</h2>
-        <form method="POST">
+        <form id="login-form">
             <div class="mb-3">
                 <label for="username" class="form-label">Nombre de Usuario</label>
                 <input type="text" class="form-control" id="username" name="username" required>
@@ -41,12 +41,11 @@
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-                <label class="form-check-label" for="rememberMe">Recuérdame</label>
-            </div>
             <button type="submit" class="btn btn-primary btn-login">Iniciar Sesión</button>
-            <div id="error-message">Usuario o contraseña incorrectos</div>
+              <!-- Mensaje de error que estará oculto por defecto -->
+            <div id="error-message" style="display: none; color: red; margin-top: 10px;">
+                Usuario o contraseña incorrectos.
+            </div>
         </form>
         <div class="mt-3 text-center">
             <a href="?menu=registrarse">¿No tienes cuenta? Regístrate</a>
@@ -58,3 +57,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0v8Fq39J4kA4mI86eDvv6c2e26g4j4R30zGzH4hR9a4wVVo1" crossorigin="anonymous"></script>
 </body>
 </html>
+
