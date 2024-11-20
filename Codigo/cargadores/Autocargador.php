@@ -29,4 +29,4 @@ private static function autocarga($name)
 }
 }
 
-//BUCLE PARA CARGAR CLASES
+

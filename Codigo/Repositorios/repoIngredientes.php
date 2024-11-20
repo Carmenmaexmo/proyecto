@@ -10,38 +10,38 @@ class RepoIngredientes {
         $this->conexion = $db->getConnection();
     }
 
-    // Crear un ingrediente
     public function createIngrediente($ingredienteData, $alergenosIds = []) {
         $stmt = $this->conexion->prepare("INSERT INTO Ingredientes (nombre, foto, precio, tipo) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssds", $ingredienteData['nombre'], $ingredienteData['foto'], $ingredienteData['precio'], $ingredienteData['tipo']);
         $stmt->execute();
-
+    
         if ($stmt->affected_rows === 0) {
             return null;
         }
-
+    
         $ingredienteId = $this->conexion->insert_id;
-
+    
         foreach ($alergenosIds as $alergenoId) {
             $this->addAlergenoToIngrediente($ingredienteId, $alergenoId);
         }
-
+    
         return $ingredienteId;
     }
+    
 
-    // Actualizar un ingrediente
     public function updateIngrediente($idIngrediente, $ingredienteData, $alergenosIds = []) {
         $stmt = $this->conexion->prepare("UPDATE Ingredientes SET nombre = ?, foto = ?, precio = ?, tipo = ? WHERE idIngredientes = ?");
         $stmt->bind_param("ssdsi", $ingredienteData['nombre'], $ingredienteData['foto'], $ingredienteData['precio'], $ingredienteData['tipo'], $idIngrediente);
         $stmt->execute();
-
+    
         $this->removeAlergenosFromIngrediente($idIngrediente);
         foreach ($alergenosIds as $alergenoId) {
             $this->addAlergenoToIngrediente($idIngrediente, $alergenoId);
         }
-
+    
         return $stmt->affected_rows > 0;
     }
+    
 
     // Función para eliminar los alérgenos de un ingrediente
     public function deleteAlergenosFromIngrediente($idIngrediente) {
@@ -116,21 +116,19 @@ class RepoIngredientes {
         return $ingredientes;
     }
 
-    // Obtener un ingrediente por ID con sus alérgenos
     public function getIngredienteById($idIngrediente) {
-        // Obtener el ingrediente por ID
         $stmt = $this->conexion->prepare("SELECT * FROM Ingredientes WHERE idIngredientes = ?");
         $stmt->bind_param("i", $idIngrediente);
         $stmt->execute();
         $result = $stmt->get_result();
-
+    
         if ($result->num_rows === 0) {
-            return null; // Si no se encuentra el ingrediente, devolver null
+            return null;
         }
-
+    
         $ingrediente = $result->fetch_assoc();
-
-        // Obtener los alérgenos asociados al ingrediente
+    
+        // Obtener los alérgenos asociados
         $stmtAlergenos = $this->conexion->prepare("
             SELECT Alergenos.* FROM Alergenos
             INNER JOIN Ingredientes_has_Alergenos ON Alergenos.idAlergenos = Ingredientes_has_Alergenos.Alergenos_idAlergenos
@@ -139,16 +137,16 @@ class RepoIngredientes {
         $stmtAlergenos->bind_param("i", $idIngrediente);
         $stmtAlergenos->execute();
         $resultAlergenos = $stmtAlergenos->get_result();
-
+    
         $alergenos = [];
         while ($row = $resultAlergenos->fetch_assoc()) {
-            $alergenos[] = $row; // Añadir alérgenos a la lista
+            $alergenos[] = $row;
         }
-
-        // Agregar los alérgenos al ingrediente
+    
         $ingrediente['alergenos'] = $alergenos;
-
-        return $ingrediente; // Devolver el ingrediente con los alérgenos
+    
+        return $ingrediente;
     }
+    
 
 }

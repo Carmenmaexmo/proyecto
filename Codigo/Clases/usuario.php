@@ -28,7 +28,6 @@ class Usuario {
     }
 
     // Getters
-
     public function getIdUsuario() {
         return $this->idUsuario;
     }

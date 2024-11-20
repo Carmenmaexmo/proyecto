@@ -42,7 +42,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="?menu=mantenimiento-kebabs">Mantenimiento Kebabs</a>
-                            <a class="dropdown-item" href="?menu=mantenimiento-ingredientes">Mantenimiento Ingredientes</a>
+                            <a class="dropdown-item" href="?menu=mantenimiento-ingredientes">Mantenimiento Ingredientes y Alérgenos</a>
                             <a class="dropdown-item" href="?menu=mantenimiento-pedidos">Mantenimiento Pedidos</a>
                         </div>
                     </div>

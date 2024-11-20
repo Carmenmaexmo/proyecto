@@ -56,25 +56,40 @@ class ApiIngredientes {
     }
 
     private function createIngrediente($data) {
-        if (!isset($data['nombre']) || !isset($data['precio']) || !isset($data['tipo'])) {
+        if (!isset($data['nombre'], $data['precio'], $data['tipo'])) {
             return $this->sendResponse(400, ["status" => "error", "message" => "Faltan datos obligatorios (nombre, precio, tipo)"]);
         }
-
+    
+        // Validar Base64 para la imagen
+        $fotoBase64 = $data['foto'] ?? null;
+        if ($fotoBase64 && !$this->isValidBase64($fotoBase64)) {
+            return $this->sendResponse(400, ["status" => "error", "message" => "La imagen no es válida"]);
+        }
+    
         $ingredienteData = [
             'nombre' => $data['nombre'],
-            'foto' => $data['foto'] ?? null,
+            'foto' => $fotoBase64,
             'precio' => $data['precio'],
             'tipo' => $data['tipo']
         ];
-
-        $idIngrediente = $this->repoIngredientes->createIngrediente($ingredienteData);
-
+    
+        $alergenosIds = $data['alergenos'] ?? []; // Alérgenos opcionales
+    
+        $idIngrediente = $this->repoIngredientes->createIngrediente($ingredienteData, $alergenosIds);
+    
         if ($idIngrediente) {
             return $this->sendResponse(201, ["status" => "success", "message" => "Ingrediente creado correctamente", "id" => $idIngrediente]);
         }
-
+    
         return $this->sendResponse(500, ["status" => "error", "message" => "Error al crear ingrediente"]);
     }
+    
+    // Método auxiliar para validar Base64
+    private function isValidBase64($base64) {
+        $decoded = base64_decode($base64, true);
+        return $decoded !== false && base64_encode($decoded) === $base64;
+    }
+    
 
     private function getIngredientes() {
         $ingredientes = $this->repoIngredientes->getAllIngredientes();

@@ -5,14 +5,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const editButton = document.getElementById('edit-button');
     const saveButton = document.getElementById('save-button');
     const userDataFields = document.querySelectorAll('.user-data span');
-    const allergenListContainer = document.getElementById('allergen-list'); // Contenedor para la lista de alérgenos
-
-    let updatedData = {};  // Datos modificados por el usuario
-    let originalData = {}; // Datos originales que no se modifican
+    const allergenListContainer = document.getElementById('allergen-list');
+    const allergensContainer = document.createElement('div');
+    allergensContainer.id = 'alergenos-container';
+    let updatedData = {};
+    let originalData = {};
 
     if (!idUsuario) {
         alert('No se ha encontrado el ID del usuario.');
-        window.location.href = '?menu=login.php';  // Redirigir al login si no se encuentra el idUsuario
+        window.location.href = '?menu=login.php';
         return;
     }
 
@@ -23,37 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 const user = data.usuario;
 
-                // Mostrar los datos del usuario en el HTML
+                // Mostrar datos del usuario
                 document.getElementById('user-name').textContent = user.nombre;
                 document.getElementById('user-email').textContent = user.correo;
                 document.getElementById('user-phone').textContent = user.telefono;
                 document.getElementById('user-location').textContent = user.ubicacion;
                 document.getElementById('user-wallet').textContent = `${user.monedero} €`;
 
-                // Mostrar los alérgenos del usuario
+                // Alérgenos seleccionados por el usuario
                 const userAllergens = user.alergenos || [];
                 const allergenListHTML = userAllergens.map(allergen => `<li>${allergen.nombre}</li>`).join('');
                 allergenListContainer.innerHTML = allergenListHTML;
 
-                // Guardar los datos originales
+                // Guardar datos originales
                 originalData = {
-                    nombre: user.nombre,
-                    correo: user.correo,
-                    telefono: user.telefono,
-                    ubicacion: user.ubicacion,
-                    monedero: user.monedero,
-                    rol: user.rol,
-                    carrito: user.carrito,
-                    contraseña: user.contraseña,
-                    foto: user.foto || null,
+                    ...user,
                     alergenos: userAllergens.map(allergen => allergen.idAlergenos),
                 };
 
-                // Mostrar la foto del usuario si tiene una
                 if (user.foto) {
                     userPhoto.src = user.foto;
                 }
-
             } else {
                 alert('Error al cargar los datos del usuario.');
             }
@@ -63,29 +54,49 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Hubo un error al cargar los datos.');
         });
 
-    // Subir una nueva foto
-    userPhoto.addEventListener('click', () => {
-        photoUpload.click();
-    });
+    // Función para cargar alérgenos desde la API usando jQuery
+    function cargarAlergenos() {
+        $.ajax({
+            url: './api/ApiAlergenos.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log("Datos de alérgenos recibidos:", data);
+                let alergenos = data || []; // Asegurar que sea un array válido
+                allergensContainer.innerHTML = ''; // Limpiar el contenedor antes de cargar nuevos datos
 
-    photoUpload.addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                userPhoto.src = e.target.result;
-                updatedData['foto'] = file;
-                saveButton.style.display = 'inline-block';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+                alergenos.forEach(function (alergeno) {
+                    // Crear checkbox y label para cada alérgeno
+                    let isChecked = originalData.alergenos.includes(alergeno.idAlergenos);
+                    let checkboxHTML = `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" 
+                                value="${alergeno.idAlergenos}" 
+                                id="alergeno-${alergeno.idAlergenos}" 
+                                name="alergenos[]" ${isChecked ? 'checked' : ''}>
+                            <label class="form-check-label" for="alergeno-${alergeno.idAlergenos}">
+                                ${alergeno.nombre}
+                            </label>
+                        </div>
+                    `;
+                    $(allergensContainer).append(checkboxHTML);
+                });
 
-    // Habilitar edición de los datos del usuario
+                // Reemplazar la lista original con el contenedor editable
+                $(allergenListContainer).replaceWith(allergensContainer);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error al cargar los alérgenos:', error);
+                alert('Hubo un error al cargar la lista de alérgenos.');
+            }
+        });
+    }
+
+    // Editar datos
     editButton.addEventListener('click', () => {
         userDataFields.forEach(field => {
-            const key = field.id.split('-')[1]; // El id del campo (nombre, correo, etc.)
-            
+            const key = field.id.split('-')[1];
+
             if (key !== 'wallet') {
                 const input = document.createElement('input');
                 input.type = 'text';
@@ -100,49 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Cargar y editar los alérgenos
-        fetch('./api/ApiAlergenos.php')
-            .then(response => response.json())
-            .then(allergenData => {
-                const allergens = allergenData.alergenos || [];
-                allergenListContainer.innerHTML = '';
-
-                allergens.forEach(allergen => {
-                    const isChecked = originalData.alergenos.includes(parseInt(allergen.idAlergenos));
-
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.id = `allergen-${allergen.idAlergenos}`;
-                    checkbox.checked = isChecked;
-                    checkbox.dataset.allergen = allergen.idAlergenos;
-
-                    const label = document.createElement('label');
-                    label.setAttribute('for', `allergen-${allergen.idAlergenos}`);
-                    label.textContent = allergen.nombre;
-
-                    const listItem = document.createElement('li');
-                    listItem.appendChild(checkbox);
-                    listItem.appendChild(label);
-                    allergenListContainer.appendChild(listItem);
-
-                    checkbox.addEventListener('change', () => {
-                        const selectedAllergens = Array.from(document.querySelectorAll('[data-allergen]:checked'))
-                            .map(el => parseInt(el.dataset.allergen));
-                        updatedData['alergenos'] = selectedAllergens;
-                        saveButton.style.display = 'inline-block';
-                    });
-                });
-            })
-            .catch(error => {
-                console.error('Error al cargar los alérgenos:', error);
-                alert('Hubo un error al cargar la lista de alérgenos.');
-            });
-
-        editButton.style.display = 'none';
-        saveButton.style.display = 'inline-block';
+        // Cargar alérgenos al iniciar edición
+        cargarAlergenos();
     });
 
-    // Guardar los cambios
+    // Guardar cambios
     saveButton.addEventListener('click', () => {
         const formData = new FormData();
         formData.append('idUsuario', idUsuario);
@@ -157,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
             contraseña: originalData.contraseña,
             carrito: originalData.carrito,
             foto: updatedData.foto || originalData.foto,
-            alergenos: updatedData.alergenos || originalData.alergenos,
         };
 
         for (const [key, value] of Object.entries(allData)) {
