@@ -43,6 +43,7 @@
                             <a class="dropdown-item" href="?menu=mantenimiento-kebabs">Mantenimiento Kebabs</a>
                             <a class="dropdown-item" href="?menu=mantenimiento-ingredientes">Mantenimiento Ingredientes y Alérgenos</a>
                             <a class="dropdown-item" href="?menu=mantenimiento-pedidos">Mantenimiento Pedidos</a>
+                            <a class="dropdown-item" href="?menu=mantenimiento-usuarios">Mantenimiento Usuarios</a>
                         </div>
                     </div>
                 </ul>
@@ -130,10 +131,10 @@
         }
     });
 
-        document.addEventListener('DOMContentLoaded', function() {
-        // Llamar a cargarCarrito para cargar el estado inicial del carrito
-        cargarCarrito();
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+    // Llamar a cargarCarrito para cargar el estado inicial del carrito
+    cargarCarrito();
+    });
 
 
     </script>

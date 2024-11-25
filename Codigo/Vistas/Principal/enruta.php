@@ -30,8 +30,8 @@ if (isset($_GET['menu'])) {
         require_once './Vistas/Mantenimiento/mantenimientoIngredientes.php';
     } elseif ($_GET['menu'] == "mantenimiento-pedidos") {
         require_once './Vistas/Mantenimiento/mantenimientoPedidos.php' ; 
-    } elseif ($_GET['menu'] == "listadovacunas") {
-        require_once './Vistas/Mantenimiento/listadovacunas.php';
+    } elseif ($_GET['menu'] == "mantenimiento-usuarios") {
+        require_once './Vistas/Mantenimiento/mantenimientoUsuarios.php';
     } else {
         // Si el parámetro 'menu' no coincide con ninguna opción, se carga 'inicio.php'
         require_once './Vistas/Mantenimiento/inicio.php';
