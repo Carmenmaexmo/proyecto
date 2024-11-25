@@ -17,7 +17,7 @@ class ApiAlergenos {
         // Obtención del endpoint
         $url = $_SERVER['REQUEST_URI'];
         $urlParts = explode('/', trim($url, '/'));
-        $idAlergeno = isset($urlParts[4]) ? (int)$urlParts[4] : null; 
+        $idAlergeno = isset($urlParts[5]) ? (int)$urlParts[5] : null; 
 
         // Switch para manejar las peticiones HTTP
         switch ($method) {
@@ -36,7 +36,7 @@ class ApiAlergenos {
 
             case 'PUT':
                 if ($idAlergeno) {
-                    parse_str(file_get_contents("php://input"), $data);
+                    $data = json_decode(file_get_contents("php://input"), true);
                     echo $this->updateAlergeno($idAlergeno, $data);
                 } else {
                     http_response_code(400);

@@ -52,7 +52,7 @@ class ApiKebab {
                 // Actualizar un kebab
                 $data = json_decode(file_get_contents("php://input"), true); 
                 if ($idKebab && $data) {
-                    echo $this->updateKebab($idKebab, $data);
+                    echo $this->updateKebab($idKebab, $data); 
                 } else {
                     http_response_code(400);
                     echo json_encode(["status" => "error", "message" => "Datos no proporcionados correctamente"]);
@@ -117,24 +117,30 @@ class ApiKebab {
 
     // Actualizar un kebab
     private function updateKebab($idKebab, $data) {
+        // Verificar si los datos obligatorios están presentes
         if (!isset($data['nombre']) || !isset($data['precio']) || !isset($data['descripcion'])) {
             return $this->sendResponse(400, ["status" => "error", "message" => "Faltan datos obligatorios (nombre, precio, descripción)"]);
         }
-
+    
+        // Obtener los ingredientes
         $ingredientesIds = isset($data['ingredientes']) ? $data['ingredientes'] : [];
+    
+        // Datos del kebab que se van a actualizar
         $kebabData = [
             'nombre' => $data['nombre'],
-            'foto' => $data['foto'] ?? null,
+            'foto' => $data['foto'] ?? null, // Si no hay foto, asignamos null
             'precio' => $data['precio'],
             'descripcion' => $data['descripcion']
-        ];
-
+        ];        
+    
+        // Llamada al repositorio para actualizar el kebab
         $updated = $this->repoKebab->updateKebab($idKebab, $kebabData, $ingredientesIds);
-
+    
+        // Respuesta en base al resultado de la actualización
         if ($updated) {
             return $this->sendResponse(200, ["status" => "success", "message" => "Kebab actualizado correctamente"]);
         }
-
+    
         return $this->sendResponse(500, ["status" => "error", "message" => "Error al actualizar kebab"]);
     }
 
@@ -148,10 +154,11 @@ class ApiKebab {
 
         return $this->sendResponse(500, ["status" => "error", "message" => "Error al eliminar kebab"]);
     }
-
+  
     // Asociar un ingrediente a un kebab
-    private function addIngredienteToKebab($idKebab, $idIngrediente) {
-        $added = $this->repoKebab->addIngredienteToKebab($idKebab, $idIngrediente);
+    private function addIngredienteToKebab($idKebab, $ingredienteId) {
+        // Usar $idIngrediente en lugar de $ingredienteId
+        $added = $this->repoKebab->addIngredienteToKebab($idKebab, $ingredienteId);
 
         if ($added) {
             return $this->sendResponse(200, ["status" => "success", "message" => "Ingrediente asociado correctamente al kebab"]);
@@ -159,6 +166,7 @@ class ApiKebab {
 
         return $this->sendResponse(500, ["status" => "error", "message" => "Error al asociar ingrediente al kebab"]);
     }
+
 
     // Función para enviar respuestas JSON con códigos de estado adecuados
     private function sendResponse($statusCode, $response) {

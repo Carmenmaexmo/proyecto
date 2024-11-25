@@ -32,19 +32,28 @@ class RepoKebab {
 
     // Actualizar un kebab
     public function updateKebab($idKebab, $kebabData, $ingredientesIds = []) {
+        // Actualizar los datos del kebab en la base de datos
         $stmt = $this->conexion->prepare("UPDATE Kebab SET nombre = ?, foto = ?, precio = ?, descripcion = ? WHERE idKebab = ?");
         $stmt->bind_param("ssdsi", $kebabData['nombre'], $kebabData['foto'], $kebabData['precio'], $kebabData['descripcion'], $idKebab);
         $stmt->execute();
-
-        // Eliminar asociaciones actuales y agregar las nuevas
-        $this->removeIngredientesFromKebab($idKebab);
-        foreach ($ingredientesIds as $ingredienteId) {
-            $this->addIngredienteToKebab($idKebab, $ingredienteId);
+    
+        // Verificar si la actualización fue exitosa
+        if ($stmt->affected_rows > 0) {
+            // Eliminar los ingredientes previos del kebab (si es necesario)
+            $this->removeIngredientesFromKebab($idKebab);
+    
+            // Agregar los nuevos ingredientes
+            foreach ($ingredientesIds as $ingredienteId) {
+                // Aquí se agrega el ingrediente al kebab
+                $this->addIngredienteToKebab($idKebab, $ingredienteId);
+            }
+    
+            return true;
         }
-
-        return $stmt->affected_rows > 0; // Devuelve true si la actualización fue exitosa
+    
+        return false;
     }
-
+    
     // Eliminar un kebab
     public function deleteKebab($idKebab) {
         // Primero, eliminamos las asociaciones en la tabla intermedia
@@ -59,21 +68,17 @@ class RepoKebab {
     }
 
     // Asociar un ingrediente a un kebab
-    public function addIngredienteToKebab($kebabId, $ingredienteId) {
+    public function addIngredienteToKebab($idKebab, $ingredienteId) {
         $stmt = $this->conexion->prepare("INSERT INTO Kebab_has_Ingredientes (Kebab_idKebab, Ingredientes_idIngredientes) VALUES (?, ?)");
-        $stmt->bind_param("ii", $kebabId, $ingredienteId);
+        $stmt->bind_param("ii", $idKebab, $ingredienteId);
         $stmt->execute();
-
-        return $stmt->affected_rows > 0;
     }
-
+    
     // Eliminar asociaciones de ingredientes de un kebab
-    public function removeIngredientesFromKebab($kebabId) {
+    public function removeIngredientesFromKebab($idKebab) {
         $stmt = $this->conexion->prepare("DELETE FROM Kebab_has_Ingredientes WHERE Kebab_idKebab = ?");
-        $stmt->bind_param("i", $kebabId);
+        $stmt->bind_param("i", $idKebab);
         $stmt->execute();
-
-        return $stmt->affected_rows > 0;
     }
 
     // Obtener todos los kebabs con sus ingredientes

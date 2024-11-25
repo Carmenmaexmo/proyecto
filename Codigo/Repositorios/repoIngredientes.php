@@ -21,12 +21,16 @@ class RepoIngredientes {
     
         $ingredienteId = $this->conexion->insert_id;
     
-        foreach ($alergenosIds as $alergenoId) {
-            $this->addAlergenoToIngrediente($ingredienteId, $alergenoId);
+        // Asociar los alérgenos seleccionados
+        if (!empty($alergenosIds)) {
+            foreach ($alergenosIds as $alergenoId) {
+                $this->addAlergenoToIngrediente($ingredienteId, $alergenoId);
+            }
         }
     
         return $ingredienteId;
     }
+    
     
 
     public function updateIngrediente($idIngrediente, $ingredienteData, $alergenosIds = []) {

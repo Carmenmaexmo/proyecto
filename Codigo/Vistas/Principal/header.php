@@ -34,8 +34,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="?menu=contacto">Contacto</a>
                     </li>
-                     <!-- Apartado de Mantenimiento (solo visible para Administradores) -->
-                     <div class="nav-item dropdown" id="mantenimientoMenu" style="display: none;">
+                    <div class="nav-item dropdown" id="mantenimientoMenu" style="display: none;">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Mantenimiento
@@ -48,8 +47,7 @@
                     </div>
                 </ul>
                 <div class="user-actions">
-                     <!-- Apartado de Usuario (oculto si no hay usuario ni rol en localStorage) -->
-                     <div class="nav-item dropdown" id="userDropdownMenu" style="display: none;">
+                    <div class="nav-item dropdown" id="userDropdownMenu" style="display: none;">
                         <a href="#profile" class="icon dropdown-toggle" id="userDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black;">
                             <img src="../imagenes/usuario.png" alt="Usuario">
@@ -63,73 +61,81 @@
                     <a href="?menu=cartera" class="icon" title="Cartera">
                         <img src="../imagenes/monedero.png" alt="Cartera">
                     </a>
-                    <a href="?menu=carrito" class="icon" title="Carrito">
-                        <img src="../imagenes/carrito.png" alt="Carrito">
-                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="icon dropdown-toggle" id="cartDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Carrito">
+                            <img src="../imagenes/carrito.png" alt="Carrito">
+                            <span id="cart-count" class="badge badge-pill badge-danger" style="display: none;">0</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="cartDropdown">
+                            <div id="cart-items">
+                                <p class="text-center">El carrito está vacío.</p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <button id="checkout-btn" class="btn btn-primary btn-block" style="display: none;">Finalizar compra</button>
+                        </div>
+                    </div>
                     <a href="?menu=login" class="btn btn-link" style="color: black; margin-left: 10px; text-decoration: underline; display: none;">Login</a>
                 </div>
             </div>
         </nav>
     </header>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Leer el rol del usuario desde localStorage
+            const userDropdownMenu = document.getElementById('userDropdownMenu');
+            const mantenimientoMenu = document.getElementById('mantenimientoMenu');
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            
             const usuario = localStorage.getItem('usuario');
             const rol = localStorage.getItem('rol');
 
-            // Obtener los contenedores de los dropdowns
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
-            const mantenimientoMenu = document.getElementById('mantenimientoMenu');
+            // Mostrar/ocultar elementos según el rol y usuario
+            userDropdownMenu.style.display = usuario && (rol === 'cliente' || rol === 'administrador') ? 'block' : 'none';
+            mantenimientoMenu.style.display = rol === 'administrador' ? 'block' : 'none';
+            document.querySelector('.btn-link').style.display = !usuario || !rol ? 'block' : 'none';
 
-            // Mostrar el dropdown de usuario solo si hay un usuario y es cliente o administrador
-            if (usuario && (rol === 'cliente' || rol === 'administrador')) {
-                userDropdownMenu.style.display = 'block';  // Mostrar el dropdown de usuario
+            // Función para cargar el carrito
+            function cargarCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            cartItems.innerHTML = ''; // Limpiar el contenido del carrito
+            cartCount.style.display = carrito.length > 0 ? 'inline' : 'none'; // Mostrar contador si hay productos en el carrito
+            cartCount.textContent = carrito.reduce((acc, item) => acc + item.cantidad, 0); // Actualizar contador
+
+            if (carrito.length === 0) {
+                cartItems.innerHTML = '<p class="text-center">El carrito está vacío.</p>';
+                checkoutBtn.style.display = 'none';
             } else {
-                userDropdownMenu.style.display = 'none';   // Ocultar el dropdown de usuario
-            }
-
-            // Mostrar el dropdown de usuario solo si hay un usuario y es cliente o administrador
-            if (usuario && (rol === 'cliente' || rol === 'administrador')) {
-                userDropdownMenu.style.display = 'block';  // Mostrar el dropdown de usuario
-            } else {
-                userDropdownMenu.style.display = 'none';   // Ocultar el dropdown de usuario
-            }
-
-            //Mostrar el enlace de login solo si no hay usuario o rol en localStorage
-            if (!usuario || !rol) {
-                document.querySelector('.btn-link').style.display = 'block';  // Mostrar el enlace de login
-            } else {
-                document.querySelector('.btn-link').style.display = 'none';   // Ocultar el enlace de login
-            }
-
-            // Mostrar el dropdown de mantenimiento solo si el rol es administrador
-            if (rol === 'administrador') {
-                mantenimientoMenu.style.display = 'block';  // Mostrar el dropdown de mantenimiento
-            } else {
-                mantenimientoMenu.style.display = 'none';   // Ocultar el dropdown de mantenimiento
-            }
-
-            // Manejar Cerrar Sesión
-            const logoutLink = document.querySelector('.dropdown-item[href="?menu=cerrar-sesion"]');
-            if (logoutLink) {
-                logoutLink.addEventListener('click', function (event) {
-                    event.preventDefault();  // Prevenir el comportamiento por defecto del enlace
-
-                    // Limpiar el localStorage
-                    localStorage.removeItem('usuario');
-                    localStorage.removeItem('rol');
-                    console.log('Datos eliminados de localStorage: usuario y rol');
-
-                    // Redirigir al login
-                    window.location.href = '?menu=login';
+                carrito.forEach(item => {
+                    const productoHTML = `
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <img src="${item.imagen}" alt="${item.nombre}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                            <div>
+                                <p style="margin: 0; font-weight: bold;">${item.nombre}</p>
+                                <p style="margin: 0;">Cantidad: ${item.cantidad}</p>
+                                <p style="margin: 0;">Total: ${item.precioTotal.toFixed(2)}€</p>
+                            </div>
+                        </div>
+                    `;
+                    cartItems.innerHTML += productoHTML;
                 });
-            } else {
-                console.error('Enlace de "Cerrar Sesión" no encontrado');
+                checkoutBtn.style.display = 'block'; // Mostrar botón de finalizar compra
             }
+        }
+    });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Llamar a cargarCarrito para cargar el estado inicial del carrito
+        cargarCarrito();
         });
+
+
     </script>
-    
 </body>
 </html>
