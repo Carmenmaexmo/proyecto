@@ -1,0 +1,54 @@
+.ingredient-image {
+    width: 100px; /* Adjust the width as per your requirement */
+    height: auto; /* Keep the aspect ratio intact */
+}
+#kebab-casa{
+    padding-bottom: 25px;
+}
+
+/* Estilo para la sección de detalles del pedido */
+.details-box {
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.details-box h2 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Estilo para los inputs del formulario */
+input[type="number"] {
+    padding: 10px;
+    font-size: 1.1rem;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center; /* Centrar el número */
+}
+
+input[type="number"] {
+    appearance: textfield; /* Para garantizar la apariencia adecuada */
+}
+
+/* Estilo para el botón */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

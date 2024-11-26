@@ -131,10 +131,10 @@
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    //document.addEventListener('DOMContentLoaded', function() {
     // Llamar a cargarCarrito para cargar el estado inicial del carrito
-    cargarCarrito();
-    });
+    // cargarCarrito();
+    //});
 
 
     </script>

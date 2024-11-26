@@ -12,8 +12,6 @@ if (isset($_GET['menu'])) {
         require_once './Vistas/Mantenimiento/contacto.php';
     } elseif ($_GET['menu'] == "cartera") {
         require_once './Vistas/Mantenimiento/cartera.php';
-    } elseif ($_GET['menu'] == "carrito") {
-        require_once './Vistas/Mantenimiento/carrito.php';
     } elseif ($_GET['menu'] == "login") {
         require_once './Vistas/Login/autentifica.php';
     } elseif ($_GET['menu'] == "registrarse") {
