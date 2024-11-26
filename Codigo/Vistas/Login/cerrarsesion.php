@@ -3,6 +3,6 @@
 <head>
 </head>
 <body>
-    <script src="./js/cerrarsesion.js"></script>
+ <script src="./js/cerrarsesion.js"></script>
 </body>
 </html>
