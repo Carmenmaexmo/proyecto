@@ -5,32 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6A3QJ7eEoy3d6nCmGJ4u7GnZl6lx6Jq0A6BXY5iYmI5NK9O3qhl9A8rRkH" crossorigin="anonymous">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .register-container {
-            max-width: 500px;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .register-title {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .btn-register {
-            width: 100%;
-            margin-top: 10px;
-        }
-        .error-message {
-            color: red;
-            font-size: 0.875rem;
-            margin-top: 5px;
-        }
-    </style>
+    <style src="./css/registrarse.css"></style>
 </head>
 <body>
 
