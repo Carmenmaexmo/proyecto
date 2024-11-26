@@ -9,7 +9,7 @@ const estados = {
 // Función para cargar los pedidos desde la API
 function cargarPedidos() {
     $.ajax({
-        url: './api/ApiPedidos.php', // URL de tu API
+        url: './api/ApiPedidos.php', 
         type: 'GET',
         dataType: 'json',
         success: function(data) {
