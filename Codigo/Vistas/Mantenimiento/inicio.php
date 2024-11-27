@@ -11,21 +11,21 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img src="../imagenes/kebab-lacasa.jpg" class="d-block w-100" alt="Kebab de la Casa">
-                <div class="carousel-caption d-none d-md-block">
+                <div class="carousel-caption ">
                     <h3>Kebab de la Casa</h3>
                     <p>Disfruta de nuestro kebab tradicional, lleno de sabor auténtico.</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="../imagenes/kebab-personalizado.jpg" class="d-block w-100" alt="Kebab Personalizado">
-                <div class="carousel-caption d-none d-md-block">
+                <div class="carousel-caption">
                     <h3>Kebab Personalizado</h3>
                     <p>Elige tus ingredientes favoritos y crea tu kebab perfecto.</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="../imagenes/Kebab_singluten.jpg" class="d-block w-100" alt="Kebab sin Gluten">
-                <div class="carousel-caption d-none d-md-block">
+                <div class="carousel-caption">
                     <h3>Kebab sin Gluten</h3>
                     <p>Delicioso kebab adaptado para quienes prefieren una opción sin gluten.</p>
                 </div>

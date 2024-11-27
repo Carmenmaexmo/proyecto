@@ -36,7 +36,7 @@
         <div class="col-md-4">
             <div class="order-section sticky-top mt-4" style="padding-top: 90px; padding-bottom: 90px;">
                 <h2>Detalles del Pedido</h2>
-                <form id="order-form">
+                <form id="order-form" onsubmit="añadirKebabPersonalizadoAlCarrito(event)">
                     <div class="form-group">
                         <label for="cantidad">Cantidad:</label>
                         <input type="number" id="cantidad" name="cantidad" class="form-control" value="1" min="1" onchange="updatePrice()">

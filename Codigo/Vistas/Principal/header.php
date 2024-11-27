@@ -4,6 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navegación</title>
+    <style>
+          /* Estilos para que el carrito se desplace si es necesario */
+          #cart-items {
+            max-height: 300px;  /* Ajusta la altura máxima según tus necesidades */
+            overflow-y: auto;   /* Permite el desplazamiento vertical */
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        /* Agrega algunos estilos adicionales para mejorar la apariencia del carrito */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .cart-item .cart-details {
+            flex-grow: 1;
+        }
+
+        .cart-item button {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Estilo para el contador del carrito */
+        #cart-count {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 0.2em 0.5em;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Botones de aumentar y disminuir */
+        .quantity-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-buttons button {
+            padding: 5px 10px;
+            font-size: 18px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        /* Estilo del precio total */
+        .total-price {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -63,11 +134,19 @@
                         <img src="../imagenes/monedero.png" alt="Cartera">
                     </a>
                     <div class="dropdown">
-                        <a href="#" class="icon dropdown-toggle" id="cartDropdown" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Carrito">
-                            <img src="../imagenes/carrito.png" alt="Carrito">
-                            <span id="cart-count" class="badge badge-pill badge-danger" style="display: none;">0</span>
-                        </a>
+                    <a href="#" class="icon dropdown-toggle" id="cartDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Carrito">
+                        <img src="../imagenes/carrito.png" alt="Carrito">
+                        <span id="cart-count" class="badge badge-pill badge-danger" style="display: none;">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="cartDropdown">
+                        <div id="cart-items">
+                            <p class="text-center">El carrito está vacío.</p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div id="total-price" class="total-price"></div>
+                        <button id="checkout-btn" class="btn btn-primary btn-block" style="display: none;">Finalizar compra</button>
+                    </div>
+                    </div>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="cartDropdown">
                             <div id="cart-items">
                                 <p class="text-center">El carrito está vacío.</p>
@@ -82,61 +161,6 @@
         </nav>
     </header>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
-            const mantenimientoMenu = document.getElementById('mantenimientoMenu');
-            const cartCount = document.getElementById('cart-count');
-            const cartItems = document.getElementById('cart-items');
-            const checkoutBtn = document.getElementById('checkout-btn');
-            
-            const usuario = localStorage.getItem('usuario');
-            const rol = localStorage.getItem('rol');
-
-            // Mostrar/ocultar elementos según el rol y usuario
-            userDropdownMenu.style.display = usuario && (rol === 'cliente' || rol === 'administrador') ? 'block' : 'none';
-            mantenimientoMenu.style.display = rol === 'administrador' ? 'block' : 'none';
-            document.querySelector('.btn-link').style.display = !usuario || !rol ? 'block' : 'none';
-
-            // Función para cargar el carrito
-            function cargarCarrito() {
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            const cartCount = document.getElementById('cart-count');
-            const cartItems = document.getElementById('cart-items');
-            const checkoutBtn = document.getElementById('checkout-btn');
-
-            cartItems.innerHTML = ''; // Limpiar el contenido del carrito
-            cartCount.style.display = carrito.length > 0 ? 'inline' : 'none'; // Mostrar contador si hay productos en el carrito
-            cartCount.textContent = carrito.reduce((acc, item) => acc + item.cantidad, 0); // Actualizar contador
-
-            if (carrito.length === 0) {
-                cartItems.innerHTML = '<p class="text-center">El carrito está vacío.</p>';
-                checkoutBtn.style.display = 'none';
-            } else {
-                carrito.forEach(item => {
-                    const productoHTML = `
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <img src="${item.imagen}" alt="${item.nombre}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-                            <div>
-                                <p style="margin: 0; font-weight: bold;">${item.nombre}</p>
-                                <p style="margin: 0;">Cantidad: ${item.cantidad}</p>
-                                <p style="margin: 0;">Total: ${item.precioTotal.toFixed(2)}€</p>
-                            </div>
-                        </div>
-                    `;
-                    cartItems.innerHTML += productoHTML;
-                });
-                checkoutBtn.style.display = 'block'; // Mostrar botón de finalizar compra
-            }
-        }
-    });
-
-    //document.addEventListener('DOMContentLoaded', function() {
-    // Llamar a cargarCarrito para cargar el estado inicial del carrito
-    // cargarCarrito();
-    //});
-
-
-    </script>
+    <script src="./js/header.js"></script></script>
 </body>
 </html>

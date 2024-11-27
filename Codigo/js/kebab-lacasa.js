@@ -91,45 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarKebabDeLaCasa(); // Llamar la función de carga del Kebab
 });
 
-// Llamar a las funciones al cargar la página
-document.getElementById('order-form').addEventListener('submit', function(event) {
-event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+//Al agregar al carrito, se envia el ID del producto y la cantidad
+document.getElementById('add-to-cart-btn').addEventListener('click', function () {
+    const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
+    const kebab = {
+        id: 1, // El ID del Kebab de la Casa
+        nombre: "Kebab de la casa",
+        precio: parseFloat(document.getElementById('precio-unitario').textContent),
+        foto: document.getElementById('kebab-imagen').src.split(',')[1] // Base64
+    };
 
-const nombreProducto = "Kebab de la Casa"; // Nombre del producto
-const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
-const precioUnitario = parseFloat(document.getElementById('precio-unitario').textContent);
-const precioTotal = cantidad * precioUnitario;
-const imagenProducto = document.getElementById('kebab-imagen').src;
-
-// Crear un objeto para el producto
-const producto = {
-    nombre: nombreProducto,
-    cantidad: cantidad,
-    precioUnitario: precioUnitario,
-    precioTotal: precioTotal,
-    imagen: imagenProducto
-};
-
-// Obtener el carrito del localStorage (si no existe, se crea uno vacío)
-let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-// Verificar si el producto ya está en el carrito
-const index = carrito.findIndex(item => item.nombre === nombreProducto);
-if (index !== -1) {
-    // Si ya existe, actualizamos la cantidad y el precio total
-    carrito[index].cantidad += cantidad;
-    carrito[index].precioTotal = carrito[index].cantidad * carrito[index].precioUnitario;
-} else {
-    // Si no existe, lo añadimos al carrito
-    carrito.push(producto);
-}
-
-// Guardar el carrito actualizado en el localStorage
-localStorage.setItem('carrito', JSON.stringify(carrito));
-
-// Mostrar una notificación al usuario
-alert(`${nombreProducto} añadido al carrito.`);
-
-// Actualiza el contenido del carrito desplegable
-cargarCarrito();
+    agregarAlCarrito(kebab, cantidad);
 });

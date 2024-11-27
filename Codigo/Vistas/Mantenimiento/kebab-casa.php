@@ -33,7 +33,9 @@
                                     <label for="precio-total">Precio total:</label>
                                     <p id="precio-total" class="form-control-static"></p>
                                 </div>
-                                <button type="submit" class="btn btn-primary mt-3">Añadir al Carrito</button>
+                               <form id="add-to-cart-form" onsubmit="agregarAlCarrito(event)">
+                                    <button type="submit">Añadir al carrito</button>
+                                </form>
                             </form>
                         </div>
                     </div>

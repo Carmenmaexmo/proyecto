@@ -39,23 +39,25 @@ const API_KEBAB_URL = './api/ApiKebab.php'; // URL de la API para el Kebab
         const data = event.dataTransfer.getData("text");
         const selectedIngredients = document.getElementById("selected-ingredients");
 
-        const ingredient = document.getElementById(data).cloneNode(true);
-        const precio = parseFloat(document.getElementById(data).getAttribute('data-precio'));
+        const ingredientElement = document.getElementById(data);
+        const ingredientClone = ingredientElement.cloneNode(true);
+        const precio = parseFloat(ingredientElement.getAttribute('data-precio')); // Asegurarse de que es un número
+        const nombre = ingredientElement.querySelector('div').textContent.split(' - ')[0]; // Extraer el nombre del texto
 
-        ingredient.id = `selected-${data}`;
-        ingredient.classList.add("ingredient-in-dropzone");
-        ingredient.draggable = false;
+        ingredientClone.id = `selected-${data}`;
+        ingredientClone.classList.add("ingredient-in-dropzone");
+        ingredientClone.draggable = false;
 
-        ingredient.onclick = function() { 
-            removeIngredient(this.id, precio); 
+        ingredientClone.onclick = function () {
+            removeIngredient(this.id, precio);
         };
 
-        selectedIngredients.appendChild(ingredient);
+        selectedIngredients.appendChild(ingredientClone);
 
-        // Agregar el ingrediente al array
-        ingredientesSeleccionados.push({ id: data, precio: precio });
+        // Agregar el ingrediente al array de ingredientes seleccionados
+        ingredientesSeleccionados.push({ id: data, nombre: nombre.toLowerCase(), precio: precio });
 
-        // Actualizar el precio
+        // Actualizar el precio total
         updatePrice();
     }
 
@@ -69,23 +71,34 @@ const API_KEBAB_URL = './api/ApiKebab.php'; // URL de la API para el Kebab
         // Eliminar el ingrediente del array
         ingredientesSeleccionados = ingredientesSeleccionados.filter(item => item.id !== id.replace('selected-', ''));
 
-        // Actualizar el precio
+        // Actualizar el precio total después de eliminar un ingrediente
         updatePrice();
     }
 
     // Actualizar el precio total
     function updatePrice() {
         let totalPrice = 0;
+        
+        // Sumar los precios de todos los ingredientes seleccionados
         ingredientesSeleccionados.forEach(item => {
-            totalPrice += item.precio;
+            totalPrice += item.precio;  // Sumar el precio de cada ingrediente
         });
 
-        const cantidad = document.getElementById('cantidad').value;
-        totalPrice *= cantidad; // Multiplicar por la cantidad
+        // Obtener la cantidad del kebab
+        const cantidad = parseInt(document.getElementById('cantidad').value, 10);
+        
+        // Si la cantidad no es un número, asignamos un valor por defecto de 1
+        if (isNaN(cantidad)) {
+            alert('La cantidad no es válida, se establecerá a 1.');
+            totalPrice *= 1; // Por defecto, la cantidad es 1
+        } else {
+            totalPrice *= cantidad;  // Multiplicamos el precio total por la cantidad
+        }
 
-        // Mostrar el precio total en el formulario
-        document.getElementById('precio').value = `${totalPrice.toFixed(2)}€`;
+        // Actualizar el precio en el campo del formulario, asegurándonos de que el valor sea un número y solo el valor
+        document.getElementById('precio').value = `${totalPrice.toFixed(2)}€`; // Mostramos el precio con el símbolo € al final
     }
+
 
     // Cargar los ingredientes desde la API
     async function loadIngredients() {
@@ -135,3 +148,77 @@ const API_KEBAB_URL = './api/ApiKebab.php'; // URL de la API para el Kebab
         cargarKebabPersonalizado(); // Carga la imagen y descripción del kebab
         loadIngredients(); // Carga los ingredientes
     });
+
+    //Añadir un nuevo kebab personalizado al carrito
+   // Añadir un nuevo kebab personalizado al carrito
+function añadirKebabPersonalizadoAlCarrito(event) {
+    event.preventDefault(); // Evita que se recargue la página al enviar el formulario
+    
+    // Verificar ingredientes seleccionados
+    if (ingredientesSeleccionados.length < 3) {
+        alert('Debes seleccionar al menos 3 ingredientes, incluido un pan.');
+        return; // Salir de la función si no hay suficientes ingredientes
+    }
+
+    // Verificar si hay pan
+    const tienePan = ingredientesSeleccionados.some(ingrediente => ingrediente.nombre.includes('pan'));
+    if (!tienePan) {
+        alert('Debes incluir al menos un tipo de pan.');
+        return; // Salir de la función si no hay pan
+    }
+
+    // Obtener detalles del kebab personalizado
+    const nombre = 'Kebab Personalizado (' + ingredientesSeleccionados.map(i => i.nombre).join(', ') + ')';
+    const imagen = document.getElementById('kebab-imagen').src; // Imagen en Base64
+    
+    // Obtener el precio calculado dinámicamente desde el campo de texto
+    let precio = document.getElementById('precio').value;
+
+    // Limpiar el precio para eliminar el símbolo de euro (€) y otros caracteres no numéricos
+    precio = parseFloat(precio.replace(/[^\d.-]/g, '')); // Expresión regular para eliminar todo lo que no sea un número
+    
+    // Verificar que el precio es un número válido
+    if (isNaN(precio)) {
+        alert('El precio no es válido.');
+        return; // Salir si el precio no es válido
+    }
+
+    // Obtener la cantidad del campo de cantidad
+    const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
+
+    // Verificar si la cantidad es válida
+    if (cantidad <= 0) {
+        alert('Por favor, selecciona una cantidad válida.');
+        return; // Salir si la cantidad no es válida
+    }
+
+    // Crear el objeto del producto con el precio calculado y la cantidad
+    const producto = {
+        id: Date.now(), // ID único para este producto
+        nombre,
+        imagen: imagen.split(',')[1], // Base64 (extraído del src)
+        cantidad, // Aquí obtenemos la cantidad desde el campo de cantidad
+        precioUnitario: precio,
+    };
+
+    console.log('Producto a añadir:', producto);
+
+    // Recuperar el carrito actual desde localStorage
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    // Añadir el nuevo producto al carrito
+    carrito.push(producto);
+
+    // Guardar el carrito actualizado en localStorage
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+
+    // Actualizar el contador del carrito
+    actualizarContadorCarrito(carrito);
+
+    // Mostrar mensaje al usuario
+    alert('Kebab Personalizado añadido al carrito');
+}
+
+    
+    
+    

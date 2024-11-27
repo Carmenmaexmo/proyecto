@@ -265,24 +265,34 @@ function cancelarEdicion(usuarioId) {
 // Función para eliminar un usuario
 function eliminarUsuario(usuarioId) {
     if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-        $.ajax({
-            url: './api/ApiUser.php', // URL para eliminar el usuario
-            type: 'DELETE',
-            contentType: 'application/json', // Indicamos que el contenido es JSON
-            dataType: 'json',
-            data: JSON.stringify({
-                idUsuario: usuarioId // Enviamos el ID como JSON en el cuerpo de la solicitud
-            }),
-            success: function(response) {
-                if (response.success) {
-                    $(`#usuario-${usuarioId}`).remove(); // Eliminar la fila de la tabla
-                } else {
-                    alert('Error al eliminar el usuario.');
-                }
+        fetch('./api/ApiUser.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
             },
-            error: function(xhr, status, error) {
-                alert('Error al eliminar el usuario: ' + error);
+            body: JSON.stringify({ idUsuario: usuarioId }) // El ID se envía en el cuerpo de la solicitud
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar el usuario: ' + response.statusText);
             }
+            return response.json(); // Parsear la respuesta como JSON
+        })
+        .then(data => {
+            if (data.success) {
+                // Eliminar la fila de la tabla correspondiente al usuario eliminado
+                const row = document.getElementById(`usuario-${usuarioId}`);
+                if (row) {
+                    row.remove(); // Remover la fila de la tabla
+                }
+                alert('Usuario eliminado correctamente.');
+            } else {
+                alert('Error al eliminar el usuario: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar el usuario: ' + error.message);
         });
     }
 }
