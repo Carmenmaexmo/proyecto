@@ -74,6 +74,27 @@
             margin-top: 10px;
             text-align: right;
         }
+         /* Estilo para la ventana emergente */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -156,6 +177,14 @@
                         </div>
                     </div>
                     <a href="?menu=login" class="btn btn-link" style="color: black; margin-left: 10px; text-decoration: underline; display: none;">Login</a>
+                </div>
+                 <!-- Ventana emergente -->
+                <div id="login-popup" class="popup" style="display: none;">
+                    <div class="popup-content">
+                        <p>Debe iniciar sesión para finalizar la compra.</p>
+                        <a href="?menu=login" class="btn btn-primary">Iniciar sesión aquí</a>
+                        <button class="btn btn-secondary" id="close-popup-btn">Cerrar</button>
+                    </div>
                 </div>
             </div>
         </nav>

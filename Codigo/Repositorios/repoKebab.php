@@ -143,5 +143,39 @@ class RepoKebab {
 
         return $kebab;
     }
+
+    //Obtener todos los kebabs que coincidan con el nombre
+    public function getKebabsByNombre($nombrePattern) {
+        $stmt = $this->conexion->prepare("SELECT * FROM Kebab WHERE nombre LIKE ?");
+        $stmt->bind_param("s", $nombrePattern); // Usa el patrón para filtrar
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $kebabs = [];
+        while ($row = $result->fetch_assoc()) {
+            $kebab = $row;
+    
+            // Obtener los ingredientes asociados al kebab
+            $stmtIngredientes = $this->conexion->prepare("
+                SELECT Ingredientes.* FROM Ingredientes
+                INNER JOIN Kebab_has_Ingredientes ON Ingredientes.idIngredientes = Kebab_has_Ingredientes.Ingredientes_idIngredientes
+                WHERE Kebab_has_Ingredientes.Kebab_idKebab = ?
+            ");
+            $stmtIngredientes->bind_param("i", $kebab['idKebab']);
+            $stmtIngredientes->execute();
+            $resultIngredientes = $stmtIngredientes->get_result();
+    
+            $ingredientes = [];
+            while ($rowIngrediente = $resultIngredientes->fetch_assoc()) {
+                $ingredientes[] = $rowIngrediente;
+            }
+            $kebab['ingredientes'] = $ingredientes;
+    
+            $kebabs[] = $kebab;
+        }
+    
+        return $kebabs;
+    }
+    
 }
-?>
+

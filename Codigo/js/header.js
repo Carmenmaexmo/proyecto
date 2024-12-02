@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const userDropdownMenu = document.getElementById('userDropdownMenu');
     const mantenimientoMenu = document.getElementById('mantenimientoMenu');
-    const cartCount = document.getElementById('cart-count');
-    const cartItems = document.getElementById('cart-items');
-    const checkoutBtn = document.getElementById('checkout-btn');
     
     const usuario = localStorage.getItem('usuario');
     const rol = localStorage.getItem('rol');
@@ -30,24 +27,30 @@ function agregarAlCarrito(kebab, cantidad) {
     const productoExistente = carrito.find(item => item.id === kebab.id);
 
     if (productoExistente) {
-        productoExistente.cantidad += cantidad; // Actualizar la cantidad
+        // Si ya existe, solo actualizar la cantidad
+        productoExistente.cantidad += cantidad;
     } else {
+        // Si no existe, agregarlo como un nuevo producto
         carrito.push({
             id: kebab.id,
             nombre: kebab.nombre,
             cantidad: cantidad,
             precioUnitario: kebab.precio,
-            imagen: kebab.foto  // Esto es la cadena base64
+            imagen: kebab.foto,  // La cadena base64 de la imagen
         });
     }
+
+    console.log("Carrito después de agregar:", carrito);
 
     // Guardar el carrito en localStorage
     localStorage.setItem('carrito', JSON.stringify(carrito));
 
-    // Actualizar el contador visual
+    // Actualizar el contador visual y mostrar el carrito
     actualizarContadorCarrito(carrito);
+    mostrarCarrito();
 
     alert(`${cantidad} "${kebab.nombre}" añadido(s) al carrito.`);
+    console.log('Carrito desde localStorage:', JSON.parse(localStorage.getItem('carrito')));
 }
 
 // Función para mostrar el carrito de manera más ordenada
@@ -140,20 +143,37 @@ function actualizarContadorCarrito(carrito) {
     cartCount.style.display = totalItems > 0 ? 'inline-block' : 'none';
 }
 
+// Función para mostrar el popup de login al finalizar
 document.addEventListener('DOMContentLoaded', function () {
     const checkoutBtn = document.getElementById('checkout-btn');
+    const loginPopup = document.getElementById('login-popup');
+    const closePopupBtn = document.getElementById('close-popup-btn');
 
-    checkoutBtn.addEventListener('click', function () {
-        
-        // Simular la compra
-        alert('Compra en proceso...');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function () {
+            const usuario = localStorage.getItem('usuario'); // Obtener usuario desde localStorage
 
-        // Vaciar el carrito (simulación de compra exitosa)
-        localStorage.setItem('carrito', JSON.stringify([]));
+            if (!usuario) {
+                // Mostrar la ventana emergente si no hay usuario
+                loginPopup.style.display = 'flex';
+            } else {
+                // Simular el proceso de compra
+                alert('Compra en proceso...');
 
-        // Actualizar la vista del carrito
-        actualizarContadorCarrito([]);
-        mostrarCarrito();
-    });
-    
+                // Vaciar el carrito (simulación de compra exitosa)
+                localStorage.setItem('carrito', JSON.stringify([]));
+
+                // Actualizar la vista del carrito
+                actualizarContadorCarrito([]);
+                mostrarCarrito();
+            }
+        });
+    }
+
+    if (closePopupBtn) {
+        closePopupBtn.addEventListener('click', function () {
+            loginPopup.style.display = 'none'; // Cerrar la ventana emergente
+        });
+    }
 });
+

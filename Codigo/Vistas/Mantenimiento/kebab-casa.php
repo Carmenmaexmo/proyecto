@@ -1,55 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Librería jQuery -->
-    <title>Kebab de la Casa</title>
-    <link rel="stylesheet" href="./css/kebab-lacasa.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kebab de la Casa</title>
+  <style>
+   body {
+    font-family: Arial, sans-serif;
+    background-color: cornflowerblue;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    padding: 1rem;
+}
+
+#kebabs-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.kebab-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 1rem;
+    padding: 1rem;
+    width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.kebab-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.kebab-card h3 {
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+.kebab-card p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.kebab-card span {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
+/* Ingredientes con imágenes */
+.kebab-card ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+
+.kebab-card li {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.kebab-card .ingredient-image {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Botones de cantidad */
+.quantity-btn {
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: cornflowerblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.quantity-btn:hover {
+    background-color: #1e70b3;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    padding: 5px;
+    margin: 5px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Botón añadir al carrito */
+.add-to-cart-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #218838;
+}
+
+.add-to-cart-btn:active {
+    background-color: #1e7e34;
+}
+
+  </style>
 </head>
 <body>
-    <main class="container mt-5" style="padding-top: 80px;" id="kebab-casa">
-        <h1 class="text-center">Kebab de la Casa</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <!-- Imagen y descripción cargadas desde la BD -->
-                <img id="kebab-imagen" src="" class="img-fluid" alt="Kebab de la Casa">
-                <p id="kebab-descripcion" class="section-description mt-4"></p>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="details-box">
-                            <h2>Detalles del Pedido</h2>
-                            <form id="order-form">
-                                <div class="form-group">
-                                    <label for="cantidad">Cantidad:</label>
-                                    <input type="number" id="cantidad" name="cantidad" class="form-control" value="1" min="1" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="precio">Precio unitario:</label>
-                                    <p id="precio-unitario" class="form-control-static"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="precio-total">Precio total:</label>
-                                    <p id="precio-total" class="form-control-static"></p>
-                                </div>
-                               <form id="add-to-cart-form" onsubmit="agregarAlCarrito(event)">
-                                    <button type="submit">Añadir al carrito</button>
-                                </form>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <h2>Ingredientes</h2>
-                <div id="ingredientes-list" class="row">
-                    <!-- Los ingredientes específicos del kebab se cargarán aquí -->
-                </div>
-            </div>
-        </div>
-    </main>
+  <header>
+    Kebabs de la Casa
+  </header>
+  <main>
+    <div id="kebabs-container">
+      <!-- Las tarjetas de kebabs se cargarán aquí -->
+    </div>
+  </main>
 
-    <script src="./js/kebab-lacasa.js"></script>
+  <script src="./js/kebab-lacasa.js"></script>
 </body>
 </html>

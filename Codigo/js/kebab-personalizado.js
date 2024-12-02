@@ -135,89 +135,81 @@ const API_KEBAB_URL = './api/ApiKebab.php'; // URL de la API para el Kebab
         }
     }
 
-    // Mostrar u ocultar alérgenos
-    document.querySelectorAll('input[name="alergeno"]').forEach((elem) => {
-        elem.addEventListener("change", function(event) {
-            const alergenoList = document.getElementById('alergeno-list');
-            alergenoList.style.display = event.target.value === "si" ? 'block' : 'none';
-        });
-    });
-
     // Llamar a las funciones al cargar la página
     document.addEventListener('DOMContentLoaded', () => {
         cargarKebabPersonalizado(); // Carga la imagen y descripción del kebab
         loadIngredients(); // Carga los ingredientes
     });
 
-    //Añadir un nuevo kebab personalizado al carrito
-   // Añadir un nuevo kebab personalizado al carrito
-function añadirKebabPersonalizadoAlCarrito(event) {
-    event.preventDefault(); // Evita que se recargue la página al enviar el formulario
-    
-    // Verificar ingredientes seleccionados
-    if (ingredientesSeleccionados.length < 3) {
-        alert('Debes seleccionar al menos 3 ingredientes, incluido un pan.');
-        return; // Salir de la función si no hay suficientes ingredientes
+    // Añadir un nuevo kebab personalizado al carrito
+    function añadirKebabPersonalizadoAlCarrito(event) {
+        event.preventDefault(); // Evita que se recargue la página al enviar el formulario
+        
+        // Verificar ingredientes seleccionados
+        if (ingredientesSeleccionados.length < 3) {
+            alert('Debes seleccionar al menos 3 ingredientes, incluido un pan.');
+            return; // Salir de la función si no hay suficientes ingredientes
+        }
+
+        // Verificar si hay pan
+        const tienePan = ingredientesSeleccionados.some(ingrediente => ingrediente.nombre.includes('pan'));
+        if (!tienePan) {
+            alert('Debes incluir al menos un tipo de pan.');
+            return; // Salir de la función si no hay pan
+        }
+
+        // Obtener detalles del kebab personalizado
+        const nombre = 'Kebab Personalizado (' + ingredientesSeleccionados.map(i => i.nombre).join(', ') + ')';
+        const imagen = document.getElementById('kebab-imagen').src; // Imagen en Base64
+        
+        // Obtener el precio calculado dinámicamente desde el campo de texto
+        let precio = document.getElementById('precio').value;
+
+        // Limpiar el precio para eliminar el símbolo de euro (€) y otros caracteres no numéricos
+        precio = parseFloat(precio.replace(/[^\d.-]/g, '')); // Expresión regular para eliminar todo lo que no sea un número
+        
+        // Verificar que el precio es un número válido
+        if (isNaN(precio)) {
+            alert('El precio no es válido.');
+            return; // Salir si el precio no es válido
+        }
+
+        // Obtener la cantidad del campo de cantidad
+        const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
+
+        // Verificar si la cantidad es válida
+        if (cantidad <= 0) {
+            alert('Por favor, selecciona una cantidad válida.');
+            return; // Salir si la cantidad no es válida
+        }
+
+        // Crear el objeto del producto con el precio calculado y la cantidad
+        const producto = {
+            id: Date.now(), // ID único para este producto
+            nombre,
+            imagen: imagen.split(',')[1], // Base64 (extraído del src)
+            cantidad, // Aquí obtenemos la cantidad desde el campo de cantidad
+            precioUnitario: precio,
+        };
+
+        console.log('Producto a añadir:', producto);
+
+        // Recuperar el carrito actual desde localStorage
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+        // Añadir el nuevo producto al carrito
+        carrito.push(producto);
+
+        // Guardar el carrito actualizado en localStorage
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+
+        // Actualizar el contador del carrito
+        actualizarContadorCarrito(carrito);
+        mostrarCarrito();
+
+        // Mostrar mensaje al usuario
+        alert('Kebab Personalizado añadido al carrito');
     }
-
-    // Verificar si hay pan
-    const tienePan = ingredientesSeleccionados.some(ingrediente => ingrediente.nombre.includes('pan'));
-    if (!tienePan) {
-        alert('Debes incluir al menos un tipo de pan.');
-        return; // Salir de la función si no hay pan
-    }
-
-    // Obtener detalles del kebab personalizado
-    const nombre = 'Kebab Personalizado (' + ingredientesSeleccionados.map(i => i.nombre).join(', ') + ')';
-    const imagen = document.getElementById('kebab-imagen').src; // Imagen en Base64
-    
-    // Obtener el precio calculado dinámicamente desde el campo de texto
-    let precio = document.getElementById('precio').value;
-
-    // Limpiar el precio para eliminar el símbolo de euro (€) y otros caracteres no numéricos
-    precio = parseFloat(precio.replace(/[^\d.-]/g, '')); // Expresión regular para eliminar todo lo que no sea un número
-    
-    // Verificar que el precio es un número válido
-    if (isNaN(precio)) {
-        alert('El precio no es válido.');
-        return; // Salir si el precio no es válido
-    }
-
-    // Obtener la cantidad del campo de cantidad
-    const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
-
-    // Verificar si la cantidad es válida
-    if (cantidad <= 0) {
-        alert('Por favor, selecciona una cantidad válida.');
-        return; // Salir si la cantidad no es válida
-    }
-
-    // Crear el objeto del producto con el precio calculado y la cantidad
-    const producto = {
-        id: Date.now(), // ID único para este producto
-        nombre,
-        imagen: imagen.split(',')[1], // Base64 (extraído del src)
-        cantidad, // Aquí obtenemos la cantidad desde el campo de cantidad
-        precioUnitario: precio,
-    };
-
-    console.log('Producto a añadir:', producto);
-
-    // Recuperar el carrito actual desde localStorage
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-
-    // Añadir el nuevo producto al carrito
-    carrito.push(producto);
-
-    // Guardar el carrito actualizado en localStorage
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    // Actualizar el contador del carrito
-    actualizarContadorCarrito(carrito);
-
-    // Mostrar mensaje al usuario
-    alert('Kebab Personalizado añadido al carrito');
-}
 
     
     

@@ -1,56 +1,126 @@
- // Función para cargar los datos del Kebab de la Casa y sus ingredientes
- function cargarKebabDeLaCasa() {
-    $.ajax({
-        url: './api/ApiKebab.php', // URL de la API de kebabs
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            // Buscar el "Kebab de la Casa" en los datos retornados
-            let kebabDeLaCasa = data.find(kebab => kebab.nombre === "Kebab de la casa");
+document.addEventListener("DOMContentLoaded", () => {
+    const apiUrl = "./Api/ApiKebab.php?tipo=kebab_casa"; // Cambia el puerto o ruta según sea necesario
+    const kebabsContainer = document.getElementById("kebabs-container");
 
-            if (kebabDeLaCasa) {
-                // Actualizar el precio unitario en el formulario
-                const precioUnitario = kebabDeLaCasa.precio;
-                document.getElementById('precio-unitario').textContent = precioUnitario.toFixed(2);
-
-                // Calcular el precio total basado en la cantidad
-                calcularPrecioTotal(precioUnitario);
-
-                // Cargar los ingredientes específicos del Kebab de la Casa
-                cargarIngredientes(kebabDeLaCasa.ingredientes); // Pasamos los ingredientes del kebab
-
-                // Actualizar la imagen y descripción del Kebab de la Casa
-                const imagenBase64 = kebabDeLaCasa.foto;
-                document.getElementById('kebab-imagen').src = `data:image/jpeg;base64,${imagenBase64}`;
-                document.getElementById('kebab-descripcion').textContent = kebabDeLaCasa.descripcion;
-            } else {
-                alert('Error: No se encontró el Kebab de la Casa.');
+    // Función para obtener los "Kebab de la Casa"
+    const fetchKebabsDeLaCasa = async () => {
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
             }
-        },
-        error: function() {
-            alert('Error al cargar los datos del kebab.');
+
+            const kebabs = await response.json();
+            renderKebabs(kebabs);
+        } catch (error) {
+            console.error("Error al obtener los kebabs de la casa:", error);
+            kebabsContainer.innerHTML = `<p>Error al cargar los Kebabs de la Casa. Inténtalo más tarde.</p>`;
         }
-    });
-}
+    };
 
-// Función para cargar los ingredientes específicos del kebab
-function cargarIngredientes(ingredientes) {
-    const ingredientesContainer = $('#ingredientes-list');
-    ingredientesContainer.empty(); // Limpiar el contenedor
+    // Función para renderizar los kebabs en el DOM
 
-    ingredientes.forEach(ingrediente => {
-        const ingredienteHtml = `
-            <div class="col-md-6">
-                <ul class="list-unstyled">
-                    <li>
-                        <img src="data:image/jpeg;base64,${ingrediente.foto}" alt="${ingrediente.nombre}" class="ingredient-image">
-                        ${ingrediente.nombre}
-                    </li>
-                </ul>
-            </div>`;
-        ingredientesContainer.append(ingredienteHtml);
+const renderKebabs = (kebabs) => {
+    kebabsContainer.innerHTML = ""; // Limpiar el contenedor
+
+    if (kebabs.length === 0) {
+        kebabsContainer.innerHTML = `<p>No se encontraron Kebabs de la Casa.</p>`;
+        return;
+    }
+
+    kebabs.forEach((kebab) => {
+        const kebabCard = document.createElement("div");
+        kebabCard.className = "kebab-card";
+
+        // Verifica si la propiedad "foto" tiene una cadena Base64 válida
+        let fotoUrl = kebab.foto || 'placeholder.jpg'; // Usa una imagen de marcador de posición si no hay foto
+        if (fotoUrl.startsWith('/9j')) {  // Si comienza con el marcador de imagen JPEG Base64
+            fotoUrl = 'data:image/jpeg;base64,' + fotoUrl;  // Agregar el prefijo adecuado para Base64
+        }
+
+        // Crear el HTML para la tarjeta de Kebab
+        kebabCard.innerHTML = `
+            <img src="${fotoUrl}" alt="${kebab.nombre}" class="kebab-image">
+            <h3>${kebab.nombre}</h3>
+            <p>${kebab.descripcion}</p>
+            <span>${kebab.precio.toFixed(2)} €</span>
+            
+            <!-- Mostrar los ingredientes con imágenes -->
+            <h4>Ingredientes:</h4>
+            <ul>
+                ${kebab.ingredientes
+                    .map((ingrediente) => `
+                        <li>
+                            <img src="data:image/jpeg;base64,${ingrediente.foto}" alt="${ingrediente.nombre}" class="ingredient-image">
+                            ${ingrediente.nombre}
+                        </li>`)
+                    .join("")}
+            </ul>
+
+            <!-- Campo para cantidad -->
+            <div>
+                <button class="quantity-btn" data-action="decrease">-</button>
+                <input type="number" class="quantity-input" value="1" min="1">
+                <button class="quantity-btn" data-action="increase">+</button>
+            </div>
+            
+            <!-- Botón para añadir al carrito -->
+            <button class="add-to-cart-btn" data-id="${kebab.id}">Añadir al carrito</button>
+        `;
+
+        // Añadir la tarjeta al contenedor
+        kebabsContainer.appendChild(kebabCard);
+
+        // Obtener los botones y el campo de cantidad
+        const quantityInput = kebabCard.querySelector('.quantity-input');
+        const increaseBtn = kebabCard.querySelector('.quantity-btn[data-action="increase"]');
+        const decreaseBtn = kebabCard.querySelector('.quantity-btn[data-action="decrease"]');
+        const addToCartBtn = kebabCard.querySelector('.add-to-cart-btn');
+
+        // Funcionalidad para cambiar la cantidad
+        increaseBtn.addEventListener('click', () => {
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+        });
+
+        decreaseBtn.addEventListener('click', () => {
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        });
+
+        // Funcionalidad para añadir al carrito
+        addToCartBtn.addEventListener('click', () => {
+            const cantidad = parseInt(quantityInput.value) || 1; // Obtén la cantidad del input
+        
+            // Verificar que el 'kebab' tiene un ID válido
+            if (!kebab.idKebab) {
+                console.error("El kebab no tiene un ID válido:", kebab);
+                return;
+            }
+        
+            // Crear una copia del objeto kebab para evitar que se compartan referencias
+            const kebabCarrito = {
+                id: kebab.idKebab, 
+                nombre: kebab.nombre,
+                precio: kebab.precio,
+                cantidad: cantidad,
+                foto: fotoUrl.split(',')[1], // Imagen en formato Base64
+            };
+        
+            console.log("Añadiendo al carrito:", kebabCarrito);
+        
+            // Llamar a la función para añadir al carrito
+            agregarAlCarrito(kebabCarrito, cantidad);
+        });
+        
+        
     });
-}
+};
+
+    // Llamar a la función para cargar los Kebabs de la Casa al cargar la página
+    fetchKebabsDeLaCasa();
+});
+
 
 // Función para calcular el precio total dinámicamente
 function calcularPrecioTotal(precioUnitario) {
@@ -70,36 +140,5 @@ function calcularPrecioTotal(precioUnitario) {
     precioTotalElement.textContent = precioTotalInicial.toFixed(2);
 }
 
-// Función para manejar el cambio en la pregunta de alergias
-function manejarCambioAlergia() {
-    const alergiaSi = document.getElementById('alergia-si');
-    const alergiaNo = document.getElementById('alergia-no');
-    const alergenosSeleccionados = document.getElementById('alergenos-seleccionados');
-    
-    // Si el usuario selecciona "Sí", mostramos los alérgenos
-    if (alergiaSi.checked) {
-        alergenosSeleccionados.style.display = 'block';
-        cargarAlergenos(1); // Pasamos el ID del Kebab de la Casa
-    } else {
-        // Si el usuario selecciona "No", ocultamos los alérgenos
-        alergenosSeleccionados.style.display = 'none';
-    }
-}
 
-// Llamar a las funciones al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    cargarKebabDeLaCasa(); // Llamar la función de carga del Kebab
-});
 
-//Al agregar al carrito, se envia el ID del producto y la cantidad
-document.getElementById('add-to-cart-btn').addEventListener('click', function () {
-    const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
-    const kebab = {
-        id: 1, // El ID del Kebab de la Casa
-        nombre: "Kebab de la casa",
-        precio: parseFloat(document.getElementById('precio-unitario').textContent),
-        foto: document.getElementById('kebab-imagen').src.split(',')[1] // Base64
-    };
-
-    agregarAlCarrito(kebab, cantidad);
-});

@@ -20,6 +20,13 @@ class ApiKebab {
         $urlParts = explode('/', trim($url, '/'));
         $idKebab = isset($urlParts[5]) ? (int)$urlParts[5] : null; 
 
+           // Parsear los parámetros de la query string
+            $params = [];
+            if (strpos($url, '?') !== false) {
+                $queryString = parse_url($url, PHP_URL_QUERY); // Obtiene la parte después del "?"
+                parse_str($queryString, $params); // Convierte la query string en un array
+            }
+
         // Switch para manejar las peticiones HTTP
         switch ($method) {
             case 'POST':
@@ -38,11 +45,15 @@ class ApiKebab {
                 break;
 
             case 'GET':
-                // Obtener todos los kebabs
-                if (!isset($urlParts[5])) {
-                    echo $this->getKebabs();
+                // Si el parámetro 'tipo' es igual a 'kebab_casa'
+                if (isset($params['tipo']) && $params['tipo'] === 'kebab_casa') {
+                    echo $this->getKebabsDeLaCasa(); // Obtener los kebabs de la casa
                 }
-                // Obtener un kebab específico
+                // Si no hay tipo especificado, o tipo no es 'kebab_casa'
+                else if (!isset($urlParts[5])) {
+                    echo $this->getKebabs(); // Obtener todos los kebabs
+                }
+                // Obtener un kebab específico por ID
                 else {
                     echo $this->getKebab($idKebab);
                 }
@@ -113,6 +124,12 @@ class ApiKebab {
         }
 
         return $this->sendResponse(404, ["status" => "error", "message" => "Kebab no encontrado"]);
+    }
+
+    // En la clase ApiKebab
+    public function getKebabsDeLaCasa() {
+        $kebabsDeLaCasa = $this->repoKebab->getKebabsByNombre('Kebab de la casa:%');
+        return $this->sendResponse(200, $kebabsDeLaCasa);
     }
 
     // Actualizar un kebab

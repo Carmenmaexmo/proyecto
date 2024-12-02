@@ -41,33 +41,6 @@
                         <label for="cantidad">Cantidad:</label>
                         <input type="number" id="cantidad" name="cantidad" class="form-control" value="1" min="1" onchange="updatePrice()">
                     </div>
-
-                    <div class="form-group">
-                        <label>¿Tienes alguna alergia?</label><br>
-                        <label>
-                            <input type="radio" name="alergeno" value="no" checked> No
-                        </label>
-                        <label>
-                            <input type="radio" name="alergeno" value="si"> Sí
-                        </label>
-                    </div>
-
-                    <div id="alergeno-list" class="mt-2 hidden">
-                        <label>Alergenos:</label><br>
-                        <label>
-                            <input type="checkbox" name="alergenos[]" value="Gluten"> Gluten
-                        </label><br>
-                        <label>
-                            <input type="checkbox" name="alergenos[]" value="Lactosa"> Lactosa
-                        </label><br>
-                        <label>
-                            <input type="checkbox" name="alergenos[]" value="Frutos Secos"> Frutos Secos
-                        </label><br>
-                        <label>
-                            <input type="checkbox" name="alergenos[]" value="Huevo"> Huevo
-                        </label>
-                    </div>
-
                     <div class="form-group">
                         <label for="precio">Precio Total:</label>
                         <input type="text" id="precio" name="precio" class="form-control" value="0.00€" readonly>
