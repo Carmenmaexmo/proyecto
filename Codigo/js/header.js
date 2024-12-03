@@ -1,15 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
     const userDropdownMenu = document.getElementById('userDropdownMenu');
     const mantenimientoMenu = document.getElementById('mantenimientoMenu');
+    const cartera = document.getElementById('cartera-mostrar');
     
+    console.log(cartera); // Verifica si se selecciona correctamente
+
     const usuario = localStorage.getItem('usuario');
     const rol = localStorage.getItem('rol');
 
     // Mostrar/ocultar elementos según el rol y usuario
     userDropdownMenu.style.display = usuario && (rol === 'cliente' || rol === 'administrador') ? 'block' : 'none';
     mantenimientoMenu.style.display = rol === 'administrador' ? 'block' : 'none';
-    document.querySelector('.btn-link').style.display = !usuario || !rol ? 'block' : 'none';
 
+    if (cartera) {
+        cartera.style.display = usuario && (rol === 'cliente' || rol === 'administrador') ? 'block' : 'none';
+    }
+
+    document.querySelector('.btn-link').style.display = !usuario || !rol ? 'block' : 'none';
 });
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -135,15 +135,15 @@ function cancelarEdicionKebab(idKebab) {
 // Guardar los cambios realizados en un kebab
 function guardarKebab(idKebab) {
     const row = $(`#kebab-${idKebab}`);
-    const nuevoNombre = row.find('.input-nombre').val();
+    const nuevoNombre = `Kebab de la casa: ${row.find('.input-nombre').val().trim()}`;
     const nuevoPrecio = parseFloat(row.find('.input-precio').val());
     const nuevaDescripcion = row.find('.input-descripcion').val();
     const nuevaFotoFile = row.find('.input-foto')[0].files[0];
 
     // Obtener los ingredientes seleccionados solo de los checkboxes dentro de la fila actual
     const ingredientesSeleccionados = row.find('.form-check-input:checked')
-    .map(function () { return parseInt($(this).val()); })
-    .get();
+        .map(function () { return parseInt($(this).val()); })
+        .get();
 
     console.log('Ingredientes seleccionados:', ingredientesSeleccionados);
 
@@ -156,13 +156,13 @@ function guardarKebab(idKebab) {
     // Datos para enviar a la API
     const datos = {
         idKebab, // ID del kebab
-        nombre: nuevoNombre,
+        nombre: nuevoNombre, // Enviar el nombre completo con prefijo
         precio: nuevoPrecio,
         descripcion: nuevaDescripcion,
         ingredientes: ingredientesSeleccionados // Aquí pasamos los ingredientes seleccionados
     };
-    console.log('Datos a enviar:', datos);
 
+    console.log('Datos a enviar:', datos);
 
     // Procesar la foto si fue modificada
     if (nuevaFotoFile) {

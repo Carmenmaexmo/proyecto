@@ -94,7 +94,7 @@ class ApiKebab {
 
         $ingredientesIds = isset($data['ingredientes']) ? $data['ingredientes'] : [];
         $kebabData = [
-            'nombre' => $data['nombre'],
+            'nombre' => "Kebab de la casa: " . $data['nombre'],
             'foto' => $data['foto'] ?? null,
             'precio' => $data['precio'],
             'descripcion' => $data['descripcion']

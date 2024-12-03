@@ -151,9 +151,11 @@
                             <a class="dropdown-item" href="?menu=cerrar-sesion">Cerrar Sesión</a> 
                         </div>
                     </div>
-                    <a href="?menu=cartera" class="icon" title="Cartera">
-                        <img src="../imagenes/monedero.png" alt="Cartera">
-                    </a>
+                    <div id="cartera-mostrar">
+                        <a href="?menu=cartera" class="icon" title="Cartera">
+                            <img src="../imagenes/monedero.png" alt="Cartera">
+                        </a>
+                    </div>
                     <div class="dropdown">
                     <a href="#" class="icon dropdown-toggle" id="cartDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Carrito">
                         <img src="../imagenes/carrito.png" alt="Carrito">

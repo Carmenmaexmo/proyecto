@@ -1,3 +1,9 @@
+// Cargar alérgenos y usuarios al cargar la página
+$(document).ready(function() {
+    cargarAlergenos(); // Primero cargamos los alérgenos
+    cargarUsuarios(); // Luego cargamos los usuarios
+});
+
 // Función para cargar los alérgenos desde la API
 function cargarAlergenos() {
     $.ajax({
@@ -6,11 +12,14 @@ function cargarAlergenos() {
         dataType: 'json',
         success: function(data) {
             console.log("Alérgenos cargados:", data);
-            // Guardamos los alérgenos en una variable global o en un objeto para usarlos más tarde
-            window.alergenos = data || []; // Guardamos los alérgenos
+            // Asegurarse de que window.alergenos sea un array válido
+            window.alergenos = Array.isArray(data) ? data : [];
+            cargarListaAlergenos(); // Cargar los alérgenos en la lista de checkboxes
         },
         error: function(xhr, status, error) {
             console.error('Error al cargar los alérgenos:', error);
+            // Asegurarse de que window.alergenos sea un array vacío en caso de error
+            window.alergenos = [];
         }
     });
 }
@@ -36,15 +45,18 @@ function cargarUsuarios() {
 
                     // Recorremos los alérgenos asociados al usuario y los mostramos en la tabla
                     alergenosUsuario.forEach(alergenoId => {
-                        // Buscar el alérgeno en el listado de alérgenos previamente cargados
-                        let alergeno = window.alergenos.find(a => a.idAlergenos === alergenoId);
-                        if (alergeno) {
-                            alergenosHtml += `
-                                <div class="alergeno-item" data-id="${alergeno.idAlergenos}">
-                                    <img src="data:image/jpeg;base64,${alergeno.foto}" alt="${alergeno.nombre}" class="alergeno-img" style="width: 30px; height: auto; margin-right: 5px;">
-                                    <span class="alergeno-nombre">${alergeno.nombre}</span>
-                                </div>
-                            `;
+                        // Verificar que window.alergenos esté definido antes de buscar
+                        if (Array.isArray(window.alergenos)) {
+                            // Buscar el alérgeno en el listado de alérgenos previamente cargados
+                            let alergeno = window.alergenos.find(a => a.idAlergenos === alergenoId);
+                            if (alergeno) {
+                                alergenosHtml += `
+                                    <div class="alergeno-item" data-id="${alergeno.idAlergenos}">
+                                        <img src="data:image/jpeg;base64,${alergeno.foto}" alt="${alergeno.nombre}" class="alergeno-img" style="width: 30px; height: auto; margin-right: 5px;">
+                                        <span class="alergeno-nombre">${alergeno.nombre}</span>
+                                    </div>
+                                `;
+                            }
                         }
                     });
 
@@ -119,11 +131,25 @@ function cargarUsuarios() {
     });
 }
 
-// Cargar alérgenos y usuarios al cargar la página
-$(document).ready(function() {
-    cargarAlergenos(); // Primero cargamos los alérgenos
-    cargarUsuarios(); // Luego cargamos los usuarios
-});
+// Función para cargar los alérgenos en la lista de checkboxes
+function cargarListaAlergenos() {
+    if (Array.isArray(window.alergenos)) {
+        const alergenosContainer = $('#alergenos-lista');
+        alergenosContainer.html(''); // Limpiar la lista de alérgenos
+
+        window.alergenos.forEach(alergeno => {
+            alergenosContainer.append(`
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="${alergeno.idAlergenos}" id="alergeno-${alergeno.idAlergenos}">
+                    <label class="form-check-label" for="alergeno-${alergeno.idAlergenos}">
+                        <img src="data:image/jpeg;base64,${alergeno.foto}" alt="${alergeno.nombre}" class="alergeno-img" style="width: 30px; height: auto; margin-right: 5px;">
+                        ${alergeno.nombre}
+                    </label>
+                </div>
+            `);
+        });
+    }
+}
 
 // Función para habilitar los campos de edición del usuario
 function editarUsuario(usuarioId) {
@@ -131,7 +157,18 @@ function editarUsuario(usuarioId) {
     
     // Mostrar campos de entrada
     row.find('.form-control').show();
-    row.find('.nombre, .correo, .ubicacion, .telefono, .rol, .alergenos').hide();
+    row.find('.nombre, .correo, .ubicacion, .telefono, .rol, .alergenos, .foto').prop('disabled', true);
+
+    // Mostrar el formulario de alérgenos con los checkboxes
+    let alergenosUsuario = row.find('.alergenos').data('alergenos') || [];
+    window.alergenos.forEach(alergeno => {
+        if (alergenosUsuario.includes(alergeno.idAlergenos)) {
+            $(`#alergeno-${alergeno.idAlergenos}`).prop('checked', true);
+        }
+    });
+
+    // Mostrar el input para subir foto
+    row.find('.foto').html('<input type="file" name="foto" accept="image/*">');
 
     // Cambiar los botones
     row.find('.editar-btn').hide();
@@ -139,160 +176,80 @@ function editarUsuario(usuarioId) {
     row.find('.cancelar-btn').show();
 }
 
-// Función para guardar los cambios del usuario
+// Función para guardar los cambios de usuario
 function guardarUsuario(usuarioId) {
     let row = $(`#usuario-${usuarioId}`);
-
-    // Obtener los nuevos valores de los campos editables
     let nombre = row.find('input[name="nombre"]').val();
+    let correo = row.find('input[name="correo"]').val();
     let ubicacion = row.find('input[name="ubicacion"]').val();
     let telefono = row.find('input[name="telefono"]').val();
-    let contraseña = row.find('input[name="contraseña"]').val(); // Asumimos que este campo existe en el formulario
-    let foto = row.find('input[name="foto"]').val(); // Asumimos que este campo existe en el formulario
     let rol = row.find('input[name="rol"]').val();
-
-    // Verificación de campos obligatorios
-    if (!nombre || !ubicacion || !telefono || !contraseña || !rol) {
-        alert("Todos los campos son obligatorios.");
-        return; // Si falta algún campo obligatorio, no se envía la solicitud
-    }
-
-    // Obtener los alérgenos asociados al usuario
-    let alergenos = [];
-    row.find('.alergenos .alergeno-item').each(function() {
-        let alergenoId = $(this).data('id'); // Asegúrate de tener un atributo `data-id` en cada elemento de alergeno
-        alergenos.push(alergenoId);
+    let foto = row.find('input[name="foto"]').prop('files')[0]; // Foto seleccionada por el usuario
+    let alergenosSeleccionados = [];
+    
+    // Obtener alérgenos seleccionados
+    $('#alergenos-lista input:checked').each(function() {
+        alergenosSeleccionados.push($(this).val());
     });
 
-    // Si no hay alérgenos seleccionados, enviar un array vacío
-    if (alergenos.length === 0) {
-        alergenos = [];
-    }
-
-    // Obtener el carrito (si es necesario)
-    let carrito = row.find('input[name="carrito"]').val().split(','); // Suponemos que el carrito es un campo con valores separados por coma
-    if (carrito.length === 0) {
-        carrito = [];
-    }
-
-    // Suponemos un valor de monedero fijo o que el valor de monedero proviene de otro campo
-    let monedero = row.find('input[name="monedero"]').val() || 0.00; // Si no se especifica, se asigna 0.00 como valor por defecto
-
-    // Verificar que los datos sean correctos antes de enviar la solicitud
-    console.log("Datos a enviar:", {
-        idUsuario: usuarioId,
-        nombre: nombre,
-        ubicacion: ubicacion,
-        telefono: telefono,
-        contraseña: contraseña,
-        foto: foto,
-        monedero: monedero,
-        carrito: carrito,
-        rol: rol,
-        alergenos: alergenos
-    });
-
-    // Realizar la llamada a la API para actualizar el usuario (usando PUT)
+    // Llamar a la API para actualizar el usuario
     $.ajax({
-        url: './api/ApiUser.php', // URL para actualizar el usuario
-        type: 'PUT', // Usamos PUT para la actualización
-        contentType: 'application/json', // Asegúrate de enviar los datos como JSON
-        dataType: 'json',
-        data: JSON.stringify({
-            idUsuario: usuarioId,
+        url: './Api/ApiUser.php', // API para actualizar el usuario
+        type: 'PUT',
+        data: {
+            id: usuarioId,
             nombre: nombre,
+            correo: correo,
             ubicacion: ubicacion,
             telefono: telefono,
-            contraseña: contraseña,  // La contraseña es obligatoria y editable
-            foto: foto,  // La foto puede ser actualizada si es necesario
-            monedero: monedero, // El valor de monedero, que por defecto es 0.00 si no se especifica
-            carrito: carrito, // Enviamos el carrito como un array de productos
-            rol: rol,  // El rol del usuario
-            alergenos: alergenos // Enviamos los alérgenos como un array de IDs
-        }),
+            rol: rol,
+            alergenos: alergenosSeleccionados,
+            foto: foto // Aquí deberías manejar la foto de alguna manera
+        },
         success: function(response) {
-            console.log("Respuesta de la API:", response); // Agregar un console.log para ver la respuesta del servidor
-            if (response.success) {
-                // Actualizamos los valores en la tabla
-                row.find('.nombre').text(nombre).show();
-                row.find('.ubicacion').text(ubicacion).show();
-                row.find('.telefono').text(telefono).show();
-                row.find('.rol').text(rol).show();
-
-                // Foto
-                if (foto) {
-                    row.find('.foto').html(`<img src="${foto}" alt="Foto de usuario" class="foto-usuario">`).show();
-                }
-
-                // Mostrar alérgenos
-                row.find('.alergenos').html(alergenos.map(id => `<span>${id}</span>`).join(", ")).show();
-
-                // Mostrar carrito (si es necesario)
-                row.find('.carrito').html(carrito.join(', ')).show();
-
-                // Ocultar los campos de edición
-                row.find('.form-control').hide();
-
-                // Cambiar los botones
-                row.find('.guardar-btn').hide();
-                row.find('.cancelar-btn').hide();
-                row.find('.editar-btn').show();
-            } else {
-                alert('Error al guardar los cambios del usuario.');
-            }
+            alert('Usuario actualizado');
+            cargarUsuarios(); // Recargar los usuarios
         },
         error: function(xhr, status, error) {
-            console.error('Error al guardar los cambios del usuario:', error);
-            alert('Error al guardar los cambios del usuario: ' + error);
+            console.error('Error al actualizar el usuario:', error);
         }
     });
 }
 
-// Función para cancelar la edición
+// Función para cancelar la edición de un usuario
 function cancelarEdicion(usuarioId) {
-    let row = $(`#usuario-${usuarioId}`);
-    
-    // Volver a ocultar los campos de edición
-    row.find('.form-control').hide();
-    row.find('.nombre, .correo, .ubicacion, .telefono, .rol, .alergenos').show();
-
-    // Cambiar los botones
-    row.find('.guardar-btn').hide();
-    row.find('.cancelar-btn').hide();
-    row.find('.editar-btn').show();
+    cargarUsuarios(); // Recargar la lista de usuarios
 }
+
 
 // Función para eliminar un usuario
 function eliminarUsuario(usuarioId) {
-    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-        fetch('./api/ApiUser.php', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ idUsuario: usuarioId }) // El ID se envía en el cuerpo de la solicitud
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al eliminar el usuario: ' + response.statusText);
-            }
-            return response.json(); // Parsear la respuesta como JSON
-        })
-        .then(data => {
+    // Construir el objeto JSON con el idUsuario
+    const datos = JSON.stringify({ idUsuario: usuarioId });
+
+    $.ajax({
+        url: './Api/ApiUser.php', // La URL de la API que gestionará la solicitud DELETE
+        type: 'DELETE', // Método DELETE
+        contentType: 'application/json', // Especificamos que el contenido es JSON
+        data: datos, // Enviamos los datos del usuario en formato JSON
+        success: function(response) {
+            // Revisamos la respuesta del servidor
+            const data = JSON.parse(response);
             if (data.success) {
-                // Eliminar la fila de la tabla correspondiente al usuario eliminado
-                const row = document.getElementById(`usuario-${usuarioId}`);
-                if (row) {
-                    row.remove(); // Remover la fila de la tabla
-                }
                 alert('Usuario eliminado correctamente.');
+                // Aquí puedes actualizar la lista de usuarios o realizar alguna acción adicional
+                cargarUsuarios(); // Si tienes una función para cargar la lista actualizada
             } else {
                 alert('Error al eliminar el usuario: ' + data.error);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error al eliminar el usuario: ' + error.message);
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            // Si ocurre un error, lo mostramos en consola o como un mensaje
+            console.error('Error en la solicitud DELETE:', error);
+            alert('Error al eliminar el usuario. Estado: ' + status + '. Error: ' + error);
+        }
+    });
 }
+
+
+

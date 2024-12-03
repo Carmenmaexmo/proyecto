@@ -34,9 +34,9 @@
         <div class="mt-5">
         <form id="form-nuevo-kebab">
             <h3>Añadir Kebab</h3>
-            <div class="form-group">
-                <label for="nombreKebab">Nombre:</label>
-                <input type="text" id="nombreKebab" class="form-control" placeholder="Nombre del kebab">
+            <div class="input-group">
+                <span class="input-group-text">Kebab de la casa:</span>
+                <input type="text" id="nombreKebab" class="form-control" placeholder="...">
             </div>
             <div class="form-group">
                 <label for="precioKebab">Precio:</label>

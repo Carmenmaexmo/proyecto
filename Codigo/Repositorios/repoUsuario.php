@@ -184,9 +184,21 @@ class RepoUsuario {
         return $usuarios;
     }
 
+    // Función para eliminar las direcciones asociadas al usuario
+    function eliminarDireccionesPorUsuario($usuarioId) {
+        // Consulta para eliminar las direcciones asociadas al usuario
+        $query = "DELETE FROM direccion WHERE Usuario_idUsuario = ?";
+        $stmt = $this->conexion->prepare($query);
+        $stmt->bind_param('i', $usuarioId);
+        return $stmt->execute();
+    }
+
     // Método para eliminar un usuario
     public function deleteUsuario($usuarioId) {
         $this->conexion->begin_transaction();
+
+        // Primero, eliminar las direcciones asociadas al usuario
+        $this->eliminarDireccionesPorUsuario($usuarioId);
 
         // Eliminar los alérgenos asociados
         $stmtAlergenos = $this->conexion->prepare("DELETE FROM Usuario_has_Alergenos WHERE Usuario_idUsuario = ?");
@@ -208,4 +220,31 @@ class RepoUsuario {
 
         return true;
     }
+
+    // Método para actualizar el monedero de un usuario
+    public function updateMonedero($usuarioId, $nuevoSaldo) {
+        // Iniciar una transacción
+        $this->conexion->begin_transaction();
+
+        // Actualizar el saldo del monedero en la tabla Usuario
+        $stmt = $this->conexion->prepare("UPDATE Usuario SET monedero = ? WHERE idUsuario = ?");
+        $stmt->bind_param("di", $nuevoSaldo, $usuarioId);  // 'd' es para double, 'i' es para integer
+
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Verificar si el monedero fue actualizado correctamente
+        if ($stmt->affected_rows === 0) {
+            // Si no se actualizó, hacer rollback
+            $this->conexion->rollback();
+            echo json_encode(['error' => 'No se pudo actualizar el monedero del usuario.']);
+            return false;
+        }
+
+        // Confirmar la transacción
+        $this->conexion->commit();
+
+        return true;
+    }
+
 }

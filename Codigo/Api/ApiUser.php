@@ -24,7 +24,11 @@ class ApiUser {
                 }
                 break;
             case 'PUT':
-                $this->updateUsuario();
+                if (isset($_GET['action']) && $_GET['action'] === 'updateMonedero') {
+                    $this->updateMonedero();
+                } else {
+                    $this->updateUsuario();
+                }
                 break;
             case 'DELETE':
                 $this->deleteUsuario();
@@ -118,6 +122,29 @@ class ApiUser {
             echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el usuario']);
         }
     }
+
+    private function updateMonedero() {
+        $data = json_decode(file_get_contents("php://input"), true);
+    
+        if (!$data || !isset($data['idUsuario']) || !isset($data['nuevoSaldo'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Datos incompletos o inválidos']);
+            return;
+        }
+    
+        $usuarioId = $data['idUsuario'];
+        $nuevoSaldo = $data['nuevoSaldo'];
+    
+        // Llamamos al método del repositorio para actualizar el monedero
+        $resultado = $this->repoUsuario->updateMonedero($usuarioId, $nuevoSaldo);
+    
+        if ($resultado) {
+            echo json_encode(['success' => true, 'message' => 'Monedero actualizado correctamente']);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No se pudo actualizar el monedero']);
+        }
+    }
+    
 
     private function deleteUsuario() {
         $data = json_decode(file_get_contents("php://input"), true);
